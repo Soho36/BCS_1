@@ -6,16 +6,6 @@ import statistics
 import os
 
 file_path = 'Bars/MESU24_M1_w.csv'
-# file_path = 'Bars/MESU24_M2_w.csv'
-# file_path = 'Bars/MESU24_M3_w.csv'
-# file_path = 'Bars/MESU24_M5_w.csv'
-# file_path = 'Bars/MESU24_M15_w.csv'
-# file_path = 'Bars/MESU24_M30_w.csv'
-# file_path = 'Bars/MESU24_H1_w.csv'
-# file_path = 'Bars/MESU24_H2_w.csv'
-# file_path = 'Bars/MESU24_H3_w.csv'
-# file_path = 'Bars/MESU24_H4_w.csv'
-# pd.set_option('display.max_columns', 10)  # Uncomment to display all columns
 
 
 # **************************************** SETTINGS **************************************
@@ -122,6 +112,8 @@ print('Filtered dataframe: \n', filtered_by_date_dataframe)
 """
 In order to draw levels we need to resample M1 datapoints to H1
 """
+
+
 def resample_m1_datapoints(df_filtered_by_date):
     df_filtered_by_date.set_index('DateTime', inplace=True)     # Set index to DateTime for .agg function
     df_h1 = df_filtered_by_date.resample('H').agg({
