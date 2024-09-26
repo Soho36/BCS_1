@@ -42,9 +42,7 @@ def date_range_func(df_csv, start, end):
     else:
         return ticker, df_filtered_by_date      # DF MUST BE INDEX RESET
 
-
 #   RESAMPLE H1 FROM M1 DATAPOINTS
-
 def resample_m1_datapoints(df_filtered_by_date):
     df_filtered_by_date.set_index('DateTime', inplace=True)  # Set index to DateTime for .agg function
     df_h1 = df_filtered_by_date.resample('H').agg({
@@ -55,4 +53,3 @@ def resample_m1_datapoints(df_filtered_by_date):
     })
     df_h1_cleaned = df_h1.dropna()  # Remove NaN rows from the Dataframe
     return df_h1_cleaned
-

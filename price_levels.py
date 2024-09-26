@@ -1,8 +1,10 @@
 import pandas as pd
 import numpy as np
-# from main import aggregated_filtered_df
-from main import filtered_by_date_dataframe
+# from main import filtered_by_date_dataframe
+from data_handling import getting_dataframe_from_file, file_path
 
+
+dataframe_from_csv = getting_dataframe_from_file(file_path)
 
 filtered_by_date_dataframe = filtered_by_date_dataframe.loc[:, ['Open', 'High', 'Low', 'Close']]
 

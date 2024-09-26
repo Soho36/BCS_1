@@ -1,15 +1,15 @@
 # import pandas as pd
-from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
+from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints, file_path
 from price_levels import process_levels
 from signals import level_rejection_signals
 from trade_simulation import trades_simulation
+from trade_analysis import trades_analysis
 
 # **************************************** SETTINGS **************************************
-file_path = 'Bars/MESU24_M1_w.csv'
 
 # Get the data
-dataframe_from_csv = getting_dataframe_from_file(file_path)
-print('Source dataframe: \n', dataframe_from_csv)
+
+# print('Source dataframe: \n', dataframe_from_csv)
 
 start_date = '2024-07-01'       # Choose the start date to begin from
 end_date = '2024-07-02'         # Choose the end date
@@ -92,3 +92,17 @@ print('Rejection_signals_series: \n', rejection_signals_series_outside)
     stop_loss_offset_multiplier,
     rejection_signals_series_outside
 )
+
+#   ANALYSIS FUNCTION CALL
+(
+    rounded_trades_list_to_chart_profits_losses,
+    rounded_results_as_balance_change_to_chart_profits
+) = trades_analysis(
+    trade_result_both_to_trade_analysis,
+    trade_results_to_trade_analysis,
+    trades_counter_to_trade_analysis,
+    trade_direction_to_trade_analysis,
+    profit_loss_long_short_to_trade_analysis,
+    trade_result_longs_to_trade_analysis,
+    trade_result_shorts_to_trade_analysis,
+    dataframe_from_csv)
