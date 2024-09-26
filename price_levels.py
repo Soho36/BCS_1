@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from main import aggregated_filtered_df
+# from main import aggregated_filtered_df
 from main import filtered_by_date_dataframe
 
 
@@ -99,23 +99,11 @@ def is_near_level(value, levels, df):
     return any(abs(value - level) < average for _, level in levels)
 
 
-(
-    levels_startpoints_to_chart,
-    levels_endpoints_to_chart,
-    support_level_signal_running_out,
-    resistance_level_signal_running_out,
-    level_discovery_signals_series_out,
-    sr_levels_out
-) = levels_discovery(aggregated_filtered_df)
-
-levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
-
 # ********************************************************************************************************************
 filtered_by_date_dataframe.reset_index(inplace=True)
-print('SR_levels_out: \n', sr_levels_out)
-print('levels_startpoints: \n', levels_startpoints_to_chart)
 
-def add_columns_and_levels_to_dataframe(df):
+
+def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
     print('add_columns_and_levels_: \n', df)
     df.set_index('DateTime', inplace=True)
 
@@ -143,9 +131,6 @@ def add_columns_and_levels_to_dataframe(df):
 
     return column_counters
 
-
-column_counters_outside = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe)
-print('column_counters_outside: ', column_counters_outside)
 
 filtered_by_date_dataframe.reset_index(inplace=True)
 
@@ -184,10 +169,6 @@ def fill_column_with_first_non_null_value(df, column_idx):
                 df.loc[idx, column_idx] = value_to_fill
 
 
-# Fill each column with the first non-null value
-for column_index in range(1, len(column_counters_outside) + 1):
-    fill_column_with_first_non_null_value(filtered_by_date_dataframe, column_index)
-
 filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
 print('Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
 
@@ -207,11 +188,17 @@ def process_levels(aggregated_filtered_df):
     print('levels_startpoints: \n', levels_startpoints_to_chart)
 
     # Step 2: Add columns and levels to dataframe
-    column_counters_outside = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe)
-    print('column_counters_outside: ', column_counters_outside)
+    column_counters = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe, levels_startpoints_to_chart)
+    print('column_counters_outside: ', column_counters)
 
     # Step 3: Fill columns with the first non-null value
     for column_index in range(1, len(column_counters) + 1):
         fill_column_with_first_non_null_value(aggregated_filtered_df, column_index)
 
-    return aggregated_filtered_df  # Dataframe with levels filled
+    return (levels_startpoints_to_chart,
+            levels_endpoints_to_chart,
+            support_level_signal_running_out,
+            resistance_level_signal_running_out,
+            level_discovery_signals_series_out,
+            sr_levels_out,
+            aggregated_filtered_df)

@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5012c747-6917-451a-950c-b6d89674cb95" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/signals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_handling.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/price_levels.py" beforeDir="false" afterPath="$PROJECT_DIR$/price_levels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade_simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/trade_simulation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,11 +67,6 @@
           <url>file://$PROJECT_DIR$/main_alg.py</url>
           <line>150</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main_alg.py</url>
-          <line>252</line>
-          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
