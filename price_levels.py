@@ -108,13 +108,12 @@ def is_near_level(value, levels, df):
     sr_levels_out
 ) = levels_discovery(aggregated_filtered_df)
 
-print('SR_levels_out: \n', sr_levels_out)
-print('levels_startpoints: \n', levels_startpoints_to_chart)
-
+levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
 
 # ********************************************************************************************************************
 filtered_by_date_dataframe.reset_index(inplace=True)
-
+print('SR_levels_out: \n', sr_levels_out)
+print('levels_startpoints: \n', levels_startpoints_to_chart)
 
 def add_columns_and_levels_to_dataframe(df):
     print('add_columns_and_levels_: \n', df)
@@ -216,5 +215,3 @@ def process_levels(aggregated_filtered_df):
         fill_column_with_first_non_null_value(aggregated_filtered_df, column_index)
 
     return aggregated_filtered_df  # Dataframe with levels filled
-
-levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
