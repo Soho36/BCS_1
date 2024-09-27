@@ -1,24 +1,21 @@
-from main import (
-    start_simulation,
-    longs_allowed,
-    shorts_allowed,
-    new_trades_threshold,
-    use_level_price_as_entry,
-    use_candle_close_as_entry,
-    stop_loss_as_candle_min_max,
-    stop_loss_offset,
-    stop_loss_price_as_dollar_amount,
-    rr_dollar_amount,
-    risk_reward_ratio,
-    spread,
-    stop_loss_as_plus_candle,
-    stop_loss_offset_multiplier
-)
 import pandas as pd
 
 
 def trades_simulation(
         filtered_df_original,
+        start_simulation,
+        longs_allowed,
+        shorts_allowed,
+        new_trades_threshold,
+        use_level_price_as_entry,
+        use_candle_close_as_entry,
+        stop_loss_as_candle_min_max,
+        stop_loss_offset,
+        stop_loss_price_as_dollar_amount,
+        rr_dollar_amount,
+        risk_reward_ratio,
+        stop_loss_as_plus_candle,
+        spread,
         risk_reward_simulation,
         sl_offset_multiplier,
         rejection_signals_series_with_prices

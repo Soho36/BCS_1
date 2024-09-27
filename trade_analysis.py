@@ -1,12 +1,12 @@
-from main import (
-    start_simulation,
-    start_date,
-    end_date,
-    spread,
-    filtered_by_date_dataframe,
-    risk_reward_ratio,
-    ticker_name
-)
+# from main import (
+#     start_simulation,
+#     start_date,
+#     end_date,
+#     spread,
+#     filtered_by_date_dataframe,
+#     risk_reward_ratio,
+#     ticker_name
+# )
 import statistics
 
 
@@ -18,7 +18,14 @@ def trades_analysis(
         profit_loss_long_short,
         trade_result_longs,
         trade_result_short,
-        df_csv
+        df_csv,
+        start_simulation,
+        start_date,
+        end_date,
+        spread,
+        filtered_by_date_dataframe,
+        risk_reward_ratio,
+        ticker_name
 ):
 
     if start_simulation:

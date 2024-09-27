@@ -1,5 +1,4 @@
-# import pandas as pd
-from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints, file_path
+from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
 from price_levels import process_levels
 from signals import level_rejection_signals
 from trade_simulation import trades_simulation
@@ -8,8 +7,8 @@ from trade_analysis import trades_analysis
 # **************************************** SETTINGS **************************************
 
 # Get the data
-
-# print('Source dataframe: \n', dataframe_from_csv)
+file_path = 'Bars/MESU24_M1_w.csv'
+dataframe_from_csv = getting_dataframe_from_file(file_path)
 
 start_date = '2024-07-01'       # Choose the start date to begin from
 end_date = '2024-07-02'         # Choose the end date
@@ -49,16 +48,14 @@ show_balance_change_line_chart = False   # Only when Simulation is True
 # ********************************************************************************************************************
 # FUNCTIONS CALLS
 
-# Filter by date
+# data_handling.py
 ticker_name, filtered_by_date_dataframe = date_range_func(dataframe_from_csv, start_date, end_date)
 
 # Resample to H1
 aggregated_filtered_df = resample_m1_datapoints(filtered_by_date_dataframe)
 print('Aggregated dataframe: \n', aggregated_filtered_df)
 
-filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Passed to Simulation
-print('Copy of original: \n', filtered_by_date_dataframe_original)
-
+# price_levels.py
 # Call process_levels function in price_levels, get levels points for chart
 (
     levels_startpoints_to_chart,
@@ -67,17 +64,22 @@ print('Copy of original: \n', filtered_by_date_dataframe_original)
     resistance_level_signal_running_out,
     level_discovery_signals_series_out,
     sr_levels_out
-) = process_levels(aggregated_filtered_df)
+) = process_levels(filtered_by_date_dataframe, aggregated_filtered_df)
 
 levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
 
-rejection_signals_series_outside, rejection_signals_series_for_chart_outside = (
-    level_rejection_signals(filtered_by_date_dataframe, sr_levels_out)
+(rejection_signals_series_outside,
+ rejection_signals_series_for_chart_outside) = (
+    level_rejection_signals(
+        filtered_by_date_dataframe, sr_levels_out, use_level_price_as_entry, use_candle_close_as_entry
+    )
 )
 print('Rejection_signals_series: \n', rejection_signals_series_outside)
 
 
 #   SIMULATION FUNCTION CALL
+filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Passed to Simulation
+print('Copy of original: \n', filtered_by_date_dataframe_original)
 (
     trade_result_both_to_trade_analysis,
     trade_results_to_trade_analysis,
@@ -88,6 +90,19 @@ print('Rejection_signals_series: \n', rejection_signals_series_outside)
     trade_result_shorts_to_trade_analysis
 ) = trades_simulation(
     filtered_by_date_dataframe_original,
+    start_simulation,
+    longs_allowed,
+    shorts_allowed,
+    new_trades_threshold,
+    use_level_price_as_entry,
+    use_candle_close_as_entry,
+    stop_loss_as_candle_min_max,
+    stop_loss_offset,
+    stop_loss_price_as_dollar_amount,
+    rr_dollar_amount,
+    risk_reward_ratio,
+    stop_loss_as_plus_candle,
+    spread,
     risk_reward_ratio,
     stop_loss_offset_multiplier,
     rejection_signals_series_outside
@@ -105,4 +120,12 @@ print('Rejection_signals_series: \n', rejection_signals_series_outside)
     profit_loss_long_short_to_trade_analysis,
     trade_result_longs_to_trade_analysis,
     trade_result_shorts_to_trade_analysis,
-    dataframe_from_csv)
+    dataframe_from_csv,
+    start_simulation,
+    start_date,
+    end_date,
+    spread,
+    filtered_by_date_dataframe,
+    risk_reward_ratio,
+    ticker_name
+)

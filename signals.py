@@ -1,8 +1,7 @@
 import pandas as pd
-from main import use_level_price_as_entry, use_candle_close_as_entry
 
 
-def level_rejection_signals(df, sr_levels_out):
+def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_candle_close_as_entry):
     # print('level_rejection_signals DF \n', df)
 
     rejection_signals_with_prices = []

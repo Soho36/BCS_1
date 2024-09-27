@@ -1,12 +1,7 @@
 import pandas as pd
 import numpy as np
-# from main import filtered_by_date_dataframe
-from data_handling import getting_dataframe_from_file, file_path
 
-
-dataframe_from_csv = getting_dataframe_from_file(file_path)
-
-filtered_by_date_dataframe = filtered_by_date_dataframe.loc[:, ['Open', 'High', 'Low', 'Close']]
+# filtered_by_date_dataframe = filtered_by_date_dataframe.loc[:, ['Open', 'High', 'Low', 'Close']]
 
 
 def levels_discovery(agg_filtered_df):
@@ -102,8 +97,6 @@ def is_near_level(value, levels, df):
 
 
 # ********************************************************************************************************************
-filtered_by_date_dataframe.reset_index(inplace=True)
-
 
 def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
     print('add_columns_and_levels_: \n', df)
@@ -134,7 +127,7 @@ def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
     return column_counters
 
 
-filtered_by_date_dataframe.reset_index(inplace=True)
+# filtered_by_date_dataframe.reset_index(inplace=True)
 
 
 def fill_column_with_first_non_null_value(df, column_idx):
@@ -171,11 +164,12 @@ def fill_column_with_first_non_null_value(df, column_idx):
                 df.loc[idx, column_idx] = value_to_fill
 
 
-filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
-print('Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
+# filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
+# print('Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
 
 
-def process_levels(aggregated_filtered_df):
+# All the above functions are called in the following function:
+def process_levels(filtered_by_date_dataframe, aggregated_filtered_df):
     # Step 1: Discover levels
     (
         levels_startpoints_to_chart,
@@ -190,6 +184,7 @@ def process_levels(aggregated_filtered_df):
     print('levels_startpoints: \n', levels_startpoints_to_chart)
 
     # Step 2: Add columns and levels to dataframe
+    filtered_by_date_dataframe.reset_index(inplace=True)
     column_counters = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe, levels_startpoints_to_chart)
     print('column_counters_outside: ', column_counters)
 

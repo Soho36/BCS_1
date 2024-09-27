@@ -1,6 +1,7 @@
 import pandas as pd
 import os
-from main import file_path
+
+file_path = 'Bars/MESU24_M1_w.csv'
 
 
 def getting_dataframe_from_file(path):
@@ -41,6 +42,7 @@ def date_range_func(df_csv, start, end):
 
     else:
         return ticker, df_filtered_by_date      # DF MUST BE INDEX RESET
+
 
 #   RESAMPLE H1 FROM M1 DATAPOINTS
 def resample_m1_datapoints(df_filtered_by_date):
