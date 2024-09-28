@@ -8,7 +8,7 @@ def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_can
     rejection_signals_for_chart = []
 
     df.reset_index(inplace=True)
-    print('DATAFRAME INSIDE level_rejection_signals(df): \n', df.iloc[0:50])
+    print('8. DATAFRAME INSIDE level_rejection_signals(df): \n', df.iloc[0:50])
 
     for index, row in df.iterrows():
         previous_close = df.iloc[index - 1]['Close']

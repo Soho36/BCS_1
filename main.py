@@ -62,18 +62,23 @@ aggregated_filtered_h1_dataframe = resample_m1_datapoints(filtered_by_date_dataf
     support_level_signal_running_out,
     resistance_level_signal_running_out,
     level_discovery_signals_series_out,
-    sr_levels_out
-) = process_levels(filtered_by_date_dataframe, aggregated_filtered_h1_dataframe)
+    sr_levels_out,
+    aggregated_filtered_df,
+    output_df_with_levels
+) = process_levels(filtered_by_date_dataframe,
+                   aggregated_filtered_h1_dataframe)
 
 #   Will be used in charting:
 levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
 
-(rejection_signals_series_outside,
- rejection_signals_series_for_chart_outside) = (
-    level_rejection_signals(
-        filtered_by_date_dataframe, sr_levels_out, use_level_price_as_entry, use_candle_close_as_entry
-    )
-)
+(
+    rejection_signals_series_outside,
+    rejection_signals_series_for_chart_outside
+) = level_rejection_signals(output_df_with_levels,
+                            sr_levels_out,
+                            use_level_price_as_entry,
+                            use_candle_close_as_entry)
+
 print('Rejection_signals_series: \n', rejection_signals_series_outside)
 
 
@@ -89,43 +94,41 @@ filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Pa
     trade_result_longs_to_trade_analysis,
     trade_result_shorts_to_trade_analysis
 ) = trades_simulation(
-    filtered_by_date_dataframe_original,
-    start_simulation,
-    longs_allowed,
-    shorts_allowed,
-    new_trades_threshold,
-    use_level_price_as_entry,
-    use_candle_close_as_entry,
-    stop_loss_as_candle_min_max,
-    stop_loss_offset,
-    stop_loss_price_as_dollar_amount,
-    rr_dollar_amount,
-    risk_reward_ratio,
-    stop_loss_as_plus_candle,
-    spread,
-    risk_reward_ratio,
-    stop_loss_offset_multiplier,
-    rejection_signals_series_outside
-)
+                    filtered_by_date_dataframe_original,
+                    start_simulation,
+                    longs_allowed,
+                    shorts_allowed,
+                    new_trades_threshold,
+                    use_level_price_as_entry,
+                    use_candle_close_as_entry,
+                    stop_loss_as_candle_min_max,
+                    stop_loss_offset,
+                    stop_loss_price_as_dollar_amount,
+                    rr_dollar_amount,
+                    risk_reward_ratio,
+                    stop_loss_as_plus_candle,
+                    spread,
+                    risk_reward_ratio,
+                    stop_loss_offset_multiplier,
+                    rejection_signals_series_outside)
 
 #   ANALYSIS FUNCTION CALL
 (
     rounded_trades_list_to_chart_profits_losses,
     rounded_results_as_balance_change_to_chart_profits
 ) = trades_analysis(
-    trade_result_both_to_trade_analysis,
-    trade_results_to_trade_analysis,
-    trades_counter_to_trade_analysis,
-    trade_direction_to_trade_analysis,
-    profit_loss_long_short_to_trade_analysis,
-    trade_result_longs_to_trade_analysis,
-    trade_result_shorts_to_trade_analysis,
-    dataframe_from_csv,
-    start_simulation,
-    start_date,
-    end_date,
-    spread,
-    filtered_by_date_dataframe,
-    risk_reward_ratio,
-    ticker_name
-)
+                    trade_result_both_to_trade_analysis,
+                    trade_results_to_trade_analysis,
+                    trades_counter_to_trade_analysis,
+                    trade_direction_to_trade_analysis,
+                    profit_loss_long_short_to_trade_analysis,
+                    trade_result_longs_to_trade_analysis,
+                    trade_result_shorts_to_trade_analysis,
+                    dataframe_from_csv,
+                    start_simulation,
+                    start_date,
+                    end_date,
+                    spread,
+                    filtered_by_date_dataframe,
+                    risk_reward_ratio,
+                    ticker_name)
