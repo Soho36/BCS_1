@@ -69,7 +69,7 @@ def getting_dataframe_from_file(path):
 
 
 dataframe_from_csv = getting_dataframe_from_file(file_path)
-print('Source dataframe: \n', dataframe_from_csv)
+print('1. Source dataframe: \n', dataframe_from_csv)
 
 
 def date_range_func(df_csv, start, end):
@@ -107,7 +107,7 @@ def date_range_func(df_csv, start, end):
     end_date
 )
 
-print('Filtered dataframe: \n', filtered_by_date_dataframe)
+print('2. Filtered dataframe: \n', filtered_by_date_dataframe)
 
 """
 In order to draw levels we need to resample M1 datapoints to H1
@@ -122,21 +122,19 @@ def resample_m1_datapoints(df_filtered_by_date):
         'Low': 'min',
         'Close': 'last'
     })
-    df_h1_cleaned = df_h1.dropna()              # Remove NaN rows from the Dataframe
-    return df_h1_cleaned
+    aggregated_filtered_h1_dataframe = df_h1.dropna()              # Remove NaN rows from the Dataframe
+    return aggregated_filtered_h1_dataframe
 
 
-aggregated_filtered_df = resample_m1_datapoints(filtered_by_date_dataframe)
+aggregated_filtered_df = resample_m1_datapoints(filtered_by_date_dataframe)     # Will be used in levels_discovery()
 
-print('Aggregated dataframe: \n', aggregated_filtered_df)
-
-
-filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Passed to Simulation
-print('Copy of original: \n', filtered_by_date_dataframe_original)
+print('3. Aggregated dataframe: \n', aggregated_filtered_df)
 
 
-print()
-# print(f'Dataframe filtered by date:\n {filtered_by_date_dataframe}')
+filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Will be used in Simulation
+print('Copy of filtered original: \n', filtered_by_date_dataframe_original)
+
+
 print()
 print('************************************ TRADES SIMULATION ************************************')
 
@@ -145,12 +143,12 @@ print('************************************ TRADES SIMULATION ******************
 #  ----------------------------------------------------------------------------------------------
 
 
-filtered_by_date_dataframe = filtered_by_date_dataframe.loc[:, ['Open', 'High', 'Low', 'Close']]
+# filtered_by_date_dataframe = filtered_by_date_dataframe.loc[:, ['Open', 'High', 'Low', 'Close']]
 
 
 if find_levels:
     def levels_discovery(agg_filtered_df):
-        print('levels_discovery DF: \n', agg_filtered_df)
+        print('4. levels_discovery DF: \n', agg_filtered_df)
 
         levels_startpoints_tuples = []
         levels_endpoints_tuples = []
@@ -219,12 +217,13 @@ if find_levels:
         level_discovery_signal.extend([None, None])  # Appending two elements to the end, to match Dataframe length
 
         level_discovery_signals_series = pd.Series(level_discovery_signal)
-
+        print()
         print('levels_startpoints_tuples', levels_startpoints_tuples)
         print('levels_endpoints_tuples', levels_endpoints_tuples)
         print('support_levels', support_levels)
         print('resistance_levels', resistance_levels)
         print('level_discovery_signals_series', level_discovery_signals_series)
+        print()
         print('sr_levels', sr_levels)
         return (
             levels_startpoints_tuples,
@@ -250,6 +249,7 @@ if find_levels:
         sr_levels_out
     ) = levels_discovery(aggregated_filtered_df)
 
+    #   Will be used in charting:
     levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
 
 else:
@@ -264,8 +264,11 @@ print('SR_levels_out: \n', sr_levels_out)
 print('levels_startpoints: \n', levels_startpoints_to_chart)
 
 
+filtered_by_date_dataframe = filtered_by_date_dataframe.copy()
+
+
 def add_columns_and_levels_to_dataframe(df):
-    print('add_columns_and_levels_: \n', df)
+    print('5. add_columns_and_levels_: \n', df)
     df.set_index('DateTime', inplace=True)
 
     """
@@ -296,11 +299,11 @@ def add_columns_and_levels_to_dataframe(df):
 column_counters_outside = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe)
 print('column_counters_outside: ', column_counters_outside)
 
-filtered_by_date_dataframe.reset_index(inplace=True)
-
 
 def fill_column_with_first_non_null_value(df, column_idx):
-    print('fill_column_with_first_non_null_value: \n', df.iloc[0:50])
+
+    print('6. fill_column_with_first_non_null_value: \n', df.iloc[0:50])
+    print(df.columns)
     """
     Fill the columns down till the end with level price after first not null value discovered
     Example:
@@ -337,8 +340,8 @@ def fill_column_with_first_non_null_value(df, column_idx):
 for column_index in range(1, len(column_counters_outside) + 1):
     fill_column_with_first_non_null_value(filtered_by_date_dataframe, column_index)
 
-filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
-print('Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
+# filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
+print('7. Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
 
 # *******************************************************************************************************************
 #  ----------------------------------------------------------------------------------------------
@@ -355,7 +358,7 @@ if find_levels and use_level_rejection:
         rejection_signals_for_chart = []
 
         df.reset_index(inplace=True)
-        print('DATAFRAME INSIDE level_rejection_signals(df): \n', df.iloc[0:50])
+        print('8. DATAFRAME INSIDE level_rejection_signals(df): \n', df.iloc[0:50])
 
         for index, row in df.iterrows():
             previous_close = df.iloc[index - 1]['Close']

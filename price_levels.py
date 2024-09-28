@@ -1,11 +1,9 @@
 import pandas as pd
 import numpy as np
 
-# filtered_by_date_dataframe = filtered_by_date_dataframe.loc[:, ['Open', 'High', 'Low', 'Close']]
-
 
 def levels_discovery(agg_filtered_df):
-    print('levels_discovery DF: \n', agg_filtered_df)
+    print('4. levels_discovery DF: \n', agg_filtered_df)
 
     levels_startpoints_tuples = []
     levels_endpoints_tuples = []
@@ -74,12 +72,13 @@ def levels_discovery(agg_filtered_df):
     level_discovery_signal.extend([None, None])  # Appending two elements to the end, to match Dataframe length
 
     level_discovery_signals_series = pd.Series(level_discovery_signal)
-
+    print()
     print('levels_startpoints_tuples', levels_startpoints_tuples)
     print('levels_endpoints_tuples', levels_endpoints_tuples)
     print('support_levels', support_levels)
     print('resistance_levels', resistance_levels)
     print('level_discovery_signals_series', level_discovery_signals_series)
+    print()
     print('sr_levels', sr_levels)
     return (
         levels_startpoints_tuples,
@@ -99,9 +98,8 @@ def is_near_level(value, levels, df):
 # ********************************************************************************************************************
 
 def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
-    print('add_columns_and_levels_: \n', df)
-    df.set_index('DateTime', inplace=True)
-
+    print(df.columns)
+    print('5. add_columns_and_levels_: \n', df)
     """
     Count how many columns are needed to add levels values to dataframe.
     Return dictionary like {1: 1, 2: 1, 3: 1, 4: 1}
@@ -127,11 +125,10 @@ def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
     return column_counters
 
 
-# filtered_by_date_dataframe.reset_index(inplace=True)
-
-
 def fill_column_with_first_non_null_value(df, column_idx):
-    print('fill_column_with_first_non_null_value: \n', df.iloc[0:50])
+    print(df.columns)
+    print('6. fill_column_with_first_non_null_value: \n', df.iloc[0:50])
+
     """
     Fill the columns down till the end with level price after first not null value discovered
     Example:
@@ -165,7 +162,6 @@ def fill_column_with_first_non_null_value(df, column_idx):
 
 
 # filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
-# print('Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
 
 
 # All the above functions are called in the following function:
@@ -184,13 +180,14 @@ def process_levels(filtered_by_date_dataframe, aggregated_filtered_df):
     print('levels_startpoints: \n', levels_startpoints_to_chart)
 
     # Step 2: Add columns and levels to dataframe
-    filtered_by_date_dataframe.reset_index(inplace=True)
+    filtered_by_date_dataframe = filtered_by_date_dataframe.copy()
     column_counters = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe, levels_startpoints_to_chart)
     print('column_counters_outside: ', column_counters)
 
     # Step 3: Fill columns with the first non-null value
     for column_index in range(1, len(column_counters) + 1):
-        fill_column_with_first_non_null_value(aggregated_filtered_df, column_index)
+        fill_column_with_first_non_null_value(filtered_by_date_dataframe, column_index)
+        # print('7. Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
 
     return (levels_startpoints_to_chart,
             levels_endpoints_to_chart,

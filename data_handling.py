@@ -15,6 +15,7 @@ def getting_dataframe_from_file(path):
     )
 
     print()
+    print('1. Source dataframe: \n', csv_df)
     return csv_df
 
 
@@ -41,10 +42,17 @@ def date_range_func(df_csv, start, end):
         exit()  # If dataframe is empty, stop the script
 
     else:
+        print('2. Filtered dataframe: \n', df_filtered_by_date)
         return ticker, df_filtered_by_date      # DF MUST BE INDEX RESET
 
 
+"""
+In order to draw levels we need to resample M1 datapoints to H1
+"""
+
 #   RESAMPLE H1 FROM M1 DATAPOINTS
+
+
 def resample_m1_datapoints(df_filtered_by_date):
     df_filtered_by_date.set_index('DateTime', inplace=True)  # Set index to DateTime for .agg function
     df_h1 = df_filtered_by_date.resample('H').agg({
@@ -53,5 +61,6 @@ def resample_m1_datapoints(df_filtered_by_date):
         'Low': 'min',
         'Close': 'last'
     })
-    df_h1_cleaned = df_h1.dropna()  # Remove NaN rows from the Dataframe
-    return df_h1_cleaned
+    aggregated_filtered_h1_dataframe = df_h1.dropna()  # Remove NaN rows from the Dataframe
+    print('3. Aggregated dataframe: \n', aggregated_filtered_h1_dataframe)
+    return aggregated_filtered_h1_dataframe

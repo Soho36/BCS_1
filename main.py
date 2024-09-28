@@ -52,8 +52,7 @@ show_balance_change_line_chart = False   # Only when Simulation is True
 ticker_name, filtered_by_date_dataframe = date_range_func(dataframe_from_csv, start_date, end_date)
 
 # Resample to H1
-aggregated_filtered_df = resample_m1_datapoints(filtered_by_date_dataframe)
-print('Aggregated dataframe: \n', aggregated_filtered_df)
+aggregated_filtered_h1_dataframe = resample_m1_datapoints(filtered_by_date_dataframe)
 
 # price_levels.py
 # Call process_levels function in price_levels, get levels points for chart
@@ -64,8 +63,9 @@ print('Aggregated dataframe: \n', aggregated_filtered_df)
     resistance_level_signal_running_out,
     level_discovery_signals_series_out,
     sr_levels_out
-) = process_levels(filtered_by_date_dataframe, aggregated_filtered_df)
+) = process_levels(filtered_by_date_dataframe, aggregated_filtered_h1_dataframe)
 
+#   Will be used in charting:
 levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
 
 (rejection_signals_series_outside,
@@ -79,7 +79,7 @@ print('Rejection_signals_series: \n', rejection_signals_series_outside)
 
 #   SIMULATION FUNCTION CALL
 filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Passed to Simulation
-print('Copy of original: \n', filtered_by_date_dataframe_original)
+# print('Copy of original: \n', filtered_by_date_dataframe_original)
 (
     trade_result_both_to_trade_analysis,
     trade_results_to_trade_analysis,
