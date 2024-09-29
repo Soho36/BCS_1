@@ -5,17 +5,17 @@ from trade_simulation import trades_simulation
 from trade_analysis import trades_analysis
 from analysis_charts import plot_line_chart_balance_change, plot_line_chart_profits_losses
 import matplotlib.pyplot as plt
-from candlestick_chart import plot_candlestick_chart
+from candlestick_chart import plot_candlestick_chart, plot_candlestick_chart_1h
 
 # =====================================================================================================================
 # SETTINGS
 # =====================================================================================================================
 # Get the data
-file_path = 'Bars/MESU24_M1_w.csv'
+file_path = 'Bars/MESZ24_M1_202409160000_202409272059_w.csv'
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-07-01'       # Choose the start date to begin from
-end_date = '2024-07-02'         # Choose the end date
+start_date = '2024-09-16'       # Choose the start date to begin from
+end_date = '2024-09-16'         # Choose the end date
 
 # SIMULATION
 start_simulation = True
@@ -33,13 +33,13 @@ shorts_allowed = True               # Allow or disallow trade direction
 
 spread = 0
 risk_reward_ratio = 3   # Chose risk/reward ratio (aiming to win compared to lose)
-stop_loss_as_candle_min_max = False  # Must be True if next condition is false
-stop_loss_offset = 1                 # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
+stop_loss_as_candle_min_max = True
+stop_loss_offset = 0                 # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 
-stop_loss_price_as_dollar_amount = True     # STOP as distance from entry price (previous must be false)
+stop_loss_price_as_dollar_amount = False   # STOP as distance from entry price (previous must be false)
 rr_dollar_amount = 2                       # Value for stop as distance
 
-stop_loss_as_plus_candle = True
+stop_loss_as_plus_candle = False
 stop_loss_offset_multiplier = 0    # 1 places stop one candle away from H/L (only when stop_loss_as_plus_candle = True
 
 
@@ -47,8 +47,8 @@ stop_loss_offset_multiplier = 0    # 1 places stop one candle away from H/L (onl
 show_candlestick_chart = True
 show_level_rejection_signals = True
 find_levels = True
-show_profits_losses_line_chart = True  # Only when Simulation is True
-show_balance_change_line_chart = True   # Only when Simulation is True
+show_profits_losses_line_chart = False  # Only when Simulation is True
+show_balance_change_line_chart = False   # Only when Simulation is True
 
 # =====================================================================================================================
 # FUNCTIONS CALLS
@@ -81,6 +81,7 @@ aggregated_filtered_h1_dataframe = resample_m1_datapoints(filtered_by_date_dataf
 
 #   Will be used in charting:
 levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
+print('levels_points_for_chart: \n', levels_points_for_chart)
 
 (
         rejection_signals_series_outside,
@@ -170,10 +171,24 @@ plot_line_chart_profits_losses(
 #       CANDLESTICK CHART CALL
 # =====================================================================================================================
 try:
-    plot_candlestick_chart(
+    plot_candlestick_chart(             # 1-minute chart
         filtered_by_date_dataframe,
         level_discovery_signals_series_out,
         rejection_signals_series_for_chart_outside,
+        show_candlestick_chart,
+        find_levels,
+        levels_points_for_chart,
+        ticker_name
+    )
+
+except KeyboardInterrupt:
+    print('Program stopped manually')
+
+try:
+    plot_candlestick_chart_1h(          # 1h-chart
+        aggregated_filtered_h1_dataframe,
+        # level_discovery_signals_series_out,
+        # rejection_signals_series_for_chart_outside,
         show_candlestick_chart,
         find_levels,
         levels_points_for_chart,

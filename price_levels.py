@@ -127,7 +127,7 @@ def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
 
 def fill_column_with_first_non_null_value(df, column_idx):
     print(df.columns)
-    print('6. fill_column_with_first_non_null_value: \n', df.iloc[0:50])
+    print('6. fill_column_with_first_non_null_value: \n', df)   # .iloc[0:50]
 
     """
     Fill the columns down till the end with level price after first not null value discovered
@@ -187,7 +187,7 @@ def process_levels(filtered_by_date_dataframe, aggregated_filtered_df):
     # Step 3: Fill columns with the first non-null value
     for column_index in range(1, len(column_counters) + 1):
         fill_column_with_first_non_null_value(filtered_by_date_dataframe, column_index)
-        print('7. Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])
+        print('7. Dataframe with level columns: \n', filtered_by_date_dataframe)    # .iloc[0:50]
     output_df_with_levels = filtered_by_date_dataframe.copy()
 
     return (levels_startpoints_to_chart,
