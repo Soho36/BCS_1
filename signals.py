@@ -51,4 +51,3 @@ def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_can
     rejection_signals_series_for_chart = pd.Series(rejection_signals_for_chart)
     return rejection_signals_series_with_prices, rejection_signals_series_for_chart
 
-# filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Set index back to Datetime

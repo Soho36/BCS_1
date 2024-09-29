@@ -48,8 +48,8 @@ stop_loss_offset_multiplier = 0    # 1 places stop one candle away from H/L (onl
 # CHARTS
 show_candlestick_chart = True
 show_level_rejection_signals = True
-show_profits_losses_line_chart = False  # Only when Simulation is True
-show_balance_change_line_chart = False   # Only when Simulation is True
+show_profits_losses_line_chart = True  # Only when Simulation is True
+show_balance_change_line_chart = True   # Only when Simulation is True
 
 # ******************************************************************************
 

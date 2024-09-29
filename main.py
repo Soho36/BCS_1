@@ -3,6 +3,8 @@ from price_levels import process_levels
 from signals import level_rejection_signals
 from trade_simulation import trades_simulation
 from trade_analysis import trades_analysis
+from analysis_charts import plot_line_chart_balance_change, plot_line_chart_profits_losses
+import matplotlib.pyplot as plt
 
 # **************************************** SETTINGS **************************************
 
@@ -42,8 +44,8 @@ stop_loss_offset_multiplier = 0    # 1 places stop one candle away from H/L (onl
 # CHARTS
 show_candlestick_chart = True
 show_level_rejection_signals = True
-show_profits_losses_line_chart = False  # Only when Simulation is True
-show_balance_change_line_chart = False   # Only when Simulation is True
+show_profits_losses_line_chart = True  # Only when Simulation is True
+show_balance_change_line_chart = True   # Only when Simulation is True
 
 # ********************************************************************************************************************
 # FUNCTIONS CALLS
@@ -132,3 +134,21 @@ filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Pa
                     filtered_by_date_dataframe,
                     risk_reward_ratio,
                     ticker_name)
+
+
+plot_line_chart_balance_change(
+                                rounded_results_as_balance_change_to_chart_profits,
+                                start_simulation,
+                                show_balance_change_line_chart,
+                                start_date,
+                                end_date,
+                                ticker_name
+)
+plot_line_chart_profits_losses(
+                                rounded_trades_list_to_chart_profits_losses,
+                                start_simulation,
+                                show_profits_losses_line_chart
+)
+
+
+plt.show()  # Show both charts at the same time
