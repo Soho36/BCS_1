@@ -1,5 +1,6 @@
 from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
-from price_levels import process_levels
+# from price_levels import process_levels
+from pivots import process_levels
 from signals import level_rejection_signals
 from trade_simulation import trades_simulation
 from trade_analysis import trades_analysis
@@ -14,15 +15,15 @@ from candlestick_chart import plot_candlestick_chart, plot_candlestick_chart_1h
 file_path = 'Bars/MESZ24_M1_202409160000_202409272059_w.csv'
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-16'       # Choose the start date to begin from
-end_date = '2024-09-16'         # Choose the end date
+start_date = '2024-09-20'       # Choose the start date to begin from
+end_date = '2024-09-20'         # Choose the end date
 
 # SIMULATION
 start_simulation = True
 
 
 # ENTRY CONDITIONS
-new_trades_threshold = 5            # Reject new trades placement within this period (min)
+new_trades_threshold = 0            # Reject new trades placement within this period (min)
 use_candle_close_as_entry = False   # Must be False if next condition is True
 use_level_price_as_entry = True     # Must be False if previous condition is True
 confirmation_close = False          # Candle close above/below level as confirmation
@@ -44,7 +45,8 @@ stop_loss_offset_multiplier = 0    # 1 places stop one candle away from H/L (onl
 
 
 # CHARTS
-show_candlestick_chart = True
+show_candlestick_chart_m1 = False
+show_candlestick_chart_H1 = True
 show_level_rejection_signals = True
 find_levels = True
 show_profits_losses_line_chart = False  # Only when Simulation is True
@@ -54,14 +56,14 @@ show_balance_change_line_chart = False   # Only when Simulation is True
 # FUNCTIONS CALLS
 # =====================================================================================================================
 # data_handling.py
-ticker_name, filtered_by_date_dataframe = date_range_func(
+ticker_name, filtered_by_date_dataframe_m1 = date_range_func(
         dataframe_from_csv,
         start_date,
         end_date
 )
 
 # Resample to H1
-aggregated_filtered_h1_dataframe = resample_m1_datapoints(filtered_by_date_dataframe)
+aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataframe_m1)
 
 # price_levels.py
 # Call process_levels function in price_levels, get levels points for chart
@@ -75,8 +77,8 @@ aggregated_filtered_h1_dataframe = resample_m1_datapoints(filtered_by_date_dataf
         aggregated_filtered_df,
         output_df_with_levels
 ) = process_levels(
-        filtered_by_date_dataframe,
-        aggregated_filtered_h1_dataframe
+        filtered_by_date_dataframe_m1,
+        aggregated_filtered_dataframe_h1
 )
 
 #   Will be used in charting:
@@ -98,7 +100,7 @@ print('Rejection_signals_series: \n', rejection_signals_series_outside)
 # =====================================================================================================================
 #   SIMULATION FUNCTION CALL
 # =====================================================================================================================
-filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Passed to Simulation
+filtered_by_date_dataframe_original = filtered_by_date_dataframe_m1.copy()     # Passed to Simulation
 # print('Copy of original: \n', filtered_by_date_dataframe_original)
 (
         trade_result_both_to_trade_analysis,
@@ -146,7 +148,7 @@ filtered_by_date_dataframe_original = filtered_by_date_dataframe.copy()     # Pa
         start_date,
         end_date,
         spread,
-        filtered_by_date_dataframe,
+        filtered_by_date_dataframe_m1,
         risk_reward_ratio,
         ticker_name
 )
@@ -172,10 +174,10 @@ plot_line_chart_profits_losses(
 # =====================================================================================================================
 try:
     plot_candlestick_chart(             # 1-minute chart
-        filtered_by_date_dataframe,
+        filtered_by_date_dataframe_m1,
         level_discovery_signals_series_out,
         rejection_signals_series_for_chart_outside,
-        show_candlestick_chart,
+        show_candlestick_chart_m1,
         find_levels,
         levels_points_for_chart,
         ticker_name
@@ -186,10 +188,10 @@ except KeyboardInterrupt:
 
 try:
     plot_candlestick_chart_1h(          # 1h-chart
-        aggregated_filtered_h1_dataframe,
+        aggregated_filtered_dataframe_h1,
         # level_discovery_signals_series_out,
         # rejection_signals_series_for_chart_outside,
-        show_candlestick_chart,
+        show_candlestick_chart_H1,
         find_levels,
         levels_points_for_chart,
         ticker_name

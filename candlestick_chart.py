@@ -9,7 +9,7 @@ def plot_candlestick_chart(
         df,
         level_discovery_signals_series,
         rejection_signals_series,
-        show_candlestick_chart,
+        show_candlestick_chart_m1,
         find_levels,
         levels_points_for_chart,
         ticker_name
@@ -19,7 +19,7 @@ def plot_candlestick_chart(
     print('CHART level_discovery_signals_series: \n', level_discovery_signals_series)
     print('CHART rejection_signals_series: \n', rejection_signals_series)
 
-    if show_candlestick_chart:
+    if show_candlestick_chart_m1:
 
         plots_list = []
 
@@ -68,7 +68,7 @@ def plot_candlestick_chart_1h(
         aggregated_filtered_h1_dataframe,
         # level_discovery_signals_series,
         # rejection_signals_series,
-        show_candlestick_chart,
+        show_candlestick_chart_h1,
         find_levels,
         levels_points_for_chart,
         ticker_name
@@ -78,7 +78,7 @@ def plot_candlestick_chart_1h(
     # print('CHART level_discovery_signals_series: \n', level_discovery_signals_series)
     # print('CHART rejection_signals_series: \n', rejection_signals_series)
 
-    if show_candlestick_chart:
+    if show_candlestick_chart_h1:
 
         plots_list = []
 
