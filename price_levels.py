@@ -73,13 +73,13 @@ def levels_discovery(agg_filtered_df):
 
     level_discovery_signals_series = pd.Series(level_discovery_signal)
     print()
-    print('levels_startpoints_tuples', levels_startpoints_tuples)
-    print('levels_endpoints_tuples', levels_endpoints_tuples)
-    print('support_levels', support_levels)
-    print('resistance_levels', resistance_levels)
-    print('level_discovery_signals_series', level_discovery_signals_series)
+    print('levels_startpoints_tuples: \n', levels_startpoints_tuples)
+    print('levels_endpoints_tuples: \n', levels_endpoints_tuples)
+    print('support_levels: \n', support_levels)
+    print('resistance_levels: \n', resistance_levels)
+    print('level_discovery_signals_series: \n', level_discovery_signals_series)
     print()
-    print('sr_levels', sr_levels)
+    print('sr_levels: \n', sr_levels)
     return (
         levels_startpoints_tuples,
         levels_endpoints_tuples,
