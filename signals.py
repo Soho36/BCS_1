@@ -2,7 +2,6 @@ import pandas as pd
 
 
 def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_candle_close_as_entry):
-    # print('level_rejection_signals DF \n', df)
 
     rejection_signals_with_prices = []
     rejection_signals_for_chart = []

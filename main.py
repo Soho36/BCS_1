@@ -3,7 +3,8 @@ from data_handling import getting_dataframe_from_file, date_range_func, resample
 from pivots import process_levels
 
 from signals import level_rejection_signals
-# from sig2 import level_rejection_signals
+from sig2 import level_rejection_signals
+from sig3 import level_rejection_signals
 
 from trade_simulation import trades_simulation
 from trade_analysis import trades_analysis
@@ -94,8 +95,8 @@ print('levels_points_for_chart: \n', levels_points_for_chart)
 ) = level_rejection_signals(
     output_df_with_levels,
     sr_levels_out,
-    use_level_price_as_entry,
-    use_candle_close_as_entry
+    # use_level_price_as_entry,
+    # use_candle_close_as_entry
 )
 
 print('Rejection_signals_series: \n', rejection_signals_series_outside)
