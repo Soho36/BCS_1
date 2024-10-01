@@ -1,7 +1,10 @@
 from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
 # from price_levels import process_levels
 from pivots import process_levels
+
 from signals import level_rejection_signals
+# from sig2 import level_rejection_signals
+
 from trade_simulation import trades_simulation
 from trade_analysis import trades_analysis
 from analysis_charts import plot_line_chart_balance_change, plot_line_chart_profits_losses
@@ -12,11 +15,12 @@ from candlestick_chart import plot_candlestick_chart, plot_candlestick_chart_1h
 # SETTINGS
 # =====================================================================================================================
 # Get the data
-file_path = 'Bars/MESZ24_M1_202409160000_202409272059_w.csv'
+# file_path = 'Bars/MESZ24_M1_202409160000_202409272059_w.csv'
+file_path = 'Bars/2MESZ24_M1_202409160000_202409272059_w.csv'
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-20'       # Choose the start date to begin from
-end_date = '2024-09-20'         # Choose the end date
+start_date = '2024-09-19'       # Choose the start date to begin from
+end_date = '2024-09-19'         # Choose the end date
 
 # SIMULATION
 start_simulation = True
@@ -45,7 +49,7 @@ stop_loss_offset_multiplier = 0    # 1 places stop one candle away from H/L (onl
 
 
 # CHARTS
-show_candlestick_chart_m1 = False
+show_candlestick_chart_m1 = True
 show_candlestick_chart_H1 = True
 show_level_rejection_signals = True
 find_levels = True

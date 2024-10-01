@@ -2,8 +2,9 @@ import pandas as pd
 
 
 def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_candle_close_as_entry):
-    # Track whether the price has crossed above each level
-    crossed_above_level = {level: False for _, level in sr_levels_out}
+    # Extract the price levels from `sr_levels_out` and track whether the price has crossed above each level
+    price_levels = [level[1] for level in sr_levels_out]
+    crossed_above_level = {level: False for level in price_levels}
 
     rejection_signals_with_prices = []
     rejection_signals_for_chart = []
@@ -25,8 +26,7 @@ def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_can
         signal = None  # Reset signal for each row
         price_level = None
 
-        # Iterate through the price levels to check if they are crossed
-        for _, current_sr_level in sr_levels_out:
+        for current_sr_level in price_levels:
             if pd.notna(current_sr_level):  # Ensure the level is not NaN
 
                 # Check if the previous close was below the resistance level and price crossed above
@@ -39,7 +39,6 @@ def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_can
                     if current_candle_close < current_sr_level:  # Price has dropped below the level
                         signal = -100
                         price_level = current_sr_level
-                        crossed_above_level[current_sr_level] = False  # Reset the flag after dropping below
                         break
 
         rejection_signals_with_prices.append((signal, price_level))
