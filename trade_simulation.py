@@ -20,7 +20,6 @@ def trades_simulation(
         sl_offset_multiplier,
         rejection_signals_series_with_prices
 ):
-    # print('!!!!', filtered_df_original)
 
     #   Convert Date column to Datetime object
     filtered_df_original['Date'] = pd.to_datetime(filtered_df_original['Date'])
