@@ -1,9 +1,13 @@
 from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
 # from price_levels import process_levels
 from pivots import process_levels
-
-from signals import level_rejection_signals
-from sig2 import level_rejection_signals
+"""
+sig3 works interesting on hourly. draw too much levels (need to exclude premarket)
+enable 1minute simulation but on 1H OHLC (what happened first SL or TP)
+manual level entry as option to find out will it be more precise -> better outcome?
+"""
+# from signals import level_rejection_signals
+# from sig2 import level_rejection_signals
 from sig3 import level_rejection_signals
 
 from trade_simulation import trades_simulation
@@ -17,7 +21,8 @@ from candlestick_chart import plot_candlestick_chart, plot_candlestick_chart_1h
 # =====================================================================================================================
 # Get the data
 # file_path = 'Bars/MESZ24_M1_202409160000_202409272059_w.csv'
-file_path = 'Bars/2MESZ24_M1_202409160000_202409272059_w.csv'
+# file_path = 'Bars/2MESZ24_M1_202409160000_202409272059_w.csv'
+file_path = 'Bars/MESZ24_H1_w.csv'
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
 start_date = '2024-09-19'  # Choose the start date to begin from
@@ -37,7 +42,7 @@ shorts_allowed = True  # Allow or disallow trade direction
 # RISK MANAGEMENT
 
 spread = 0
-risk_reward_ratio = 3  # Chose risk/reward ratio (aiming to win compared to lose)
+risk_reward_ratio = 1  # Chose risk/reward ratio (aiming to win compared to lose)
 stop_loss_as_candle_min_max = True
 stop_loss_offset = 0.1  # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 # HAS TO BE >0 TO AVOID BOTH TRADES
@@ -50,7 +55,7 @@ stop_loss_offset_multiplier = 0  # 1 places stop one candle away from H/L (only 
 
 # CHARTS
 show_candlestick_chart_m1 = True
-show_candlestick_chart_H1 = True
+show_candlestick_chart_H1 = False
 show_level_rejection_signals = True
 find_levels = True
 show_profits_losses_line_chart = False  # Only when Simulation is True

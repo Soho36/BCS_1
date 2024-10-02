@@ -1,5 +1,9 @@
 import pandas as pd
 
+"""
+The original signals script
+"""
+
 
 def level_rejection_signals(df, sr_levels_out, use_level_price_as_entry, use_candle_close_as_entry):
 

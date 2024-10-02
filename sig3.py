@@ -4,19 +4,23 @@ GPT version with timestamps to avoid generating signals before level discovery
 """
 
 
-def level_rejection_signals(df, sr_levels_out):
-
+def level_rejection_signals(df, sr_levels_out, lookback=3):
     rejection_signals_with_prices = []
     rejection_signals_for_chart = []
 
-    # Track the discovery time of each level
-    level_discovery_time = {level: None for _, level in sr_levels_out}
-
     df.reset_index(inplace=True)
-    print('8. DATAFRAME INSIDE level_rejection_signals(df): \n', df)  # .iloc[0:50]
+    print('8. DATAFRAME INSIDE level_rejection_signals(df): \n', df)
+
+    # Track the condition of level crosses over `lookback` period
+    level_cross_trackers = {i: {"above": 0, "below": 0} for i in range(1, len(sr_levels_out) + 1)}
 
     for index, row in df.iterrows():
-        current_time = row['DateTime']  # Assuming there's a 'Timestamp' column in your DataFrame
+        if index == 0:
+            # Skip the first row since there's no previous row for comparison
+            rejection_signals_with_prices.append((None, None))
+            rejection_signals_for_chart.append(None)
+            continue
+
         previous_close = df.iloc[index - 1]['Close']
         current_candle_close = row['Close']
         current_candle_high = row['High']
@@ -25,28 +29,36 @@ def level_rejection_signals(df, sr_levels_out):
         signal = None  # Reset signal for each row
         price_level = None
 
-        for level_index, (level_idx, current_sr_level) in enumerate(sr_levels_out):
-            if pd.notna(current_sr_level):  # Ensure the level is not NaN
+        # Iterate over all levels and check conditions
+        for level_column in range(1, len(sr_levels_out) + 1):
+            current_sr_level = row[level_column]
+            if current_sr_level is not None:
+                tracker = level_cross_trackers[level_column]
 
-                # Set the discovery time if it hasn't been set yet
-                if level_discovery_time[current_sr_level] is None:
-                    level_discovery_time[current_sr_level] = current_time
+                # Update trackers for cross events
+                if previous_close < current_sr_level and current_candle_high > current_sr_level:
+                    tracker["above"] += 1
+                elif previous_close > current_sr_level and current_candle_low < current_sr_level:
+                    tracker["below"] += 1
 
-                # Ensure the current row is after the level discovery time
-                if current_time >= level_discovery_time[current_sr_level]:
-                    if previous_close < current_sr_level:  # Check if the PREVIOUS CANDLE close was below the level
-                        if current_candle_high > current_sr_level:  # CURRENT CANDLE has crossed above the level
-                            if current_candle_close < current_sr_level:  # but closed below
-                                signal = -100
-                                price_level = current_sr_level
-                                break
+                # If the opposite condition happens, reset the tracker
+                if previous_close > current_sr_level:
+                    tracker["above"] = 0
+                if previous_close < current_sr_level:
+                    tracker["below"] = 0
 
-                    elif previous_close > current_sr_level:  # Check if the previous close was above the support level
-                        if current_candle_low < current_sr_level:  # Price has crossed below support level
-                            if current_candle_close > current_sr_level:  # but closed above
-                                signal = 100
-                                price_level = current_sr_level
-                                break
+                # Check if the level has been crossed multiple times within the lookback period
+                if tracker["above"] > 0 and tracker["above"] <= lookback and current_candle_close < current_sr_level:
+                    signal = -100
+                    price_level = current_sr_level
+                    tracker["above"] = 0  # Reset after signal
+                    break
+
+                if tracker["below"] > 0 and tracker["below"] <= lookback and current_candle_close > current_sr_level:
+                    signal = 100
+                    price_level = current_sr_level
+                    tracker["below"] = 0  # Reset after signal
+                    break
 
         rejection_signals_with_prices.append((signal, price_level))
         rejection_signals_for_chart.append(signal)
@@ -54,3 +66,10 @@ def level_rejection_signals(df, sr_levels_out):
     rejection_signals_series_with_prices = pd.Series(rejection_signals_with_prices)
     rejection_signals_series_for_chart = pd.Series(rejection_signals_for_chart)
     return rejection_signals_series_with_prices, rejection_signals_series_for_chart
+
+# Example usage:
+# lookback = 5 (can be adjusted as needed)
+# df is your input DataFrame
+# sr_levels_out is your list of levels
+
+

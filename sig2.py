@@ -1,5 +1,9 @@
 import pandas as pd
 
+"""
+Slightly optimized original
+"""
+
 
 def level_rejection_signals(df, sr_levels_out):
 
