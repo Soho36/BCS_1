@@ -79,7 +79,8 @@ def levels_discovery(agg_filtered_df):
     print('resistance_levels', resistance_levels)
     print('level_discovery_signals_series', level_discovery_signals_series)
     print()
-    print('sr_levels', sr_levels)
+    print('999. sr_levels', sr_levels)
+    sr_levels = [(9, np.float64(5699.15)), (7, np.float64(5700.0)), (14, np.float64(5669.25))]
     return (
         levels_startpoints_tuples,
         levels_endpoints_tuples,
@@ -176,9 +177,6 @@ def process_levels(filtered_by_date_dataframe, aggregated_filtered_df):
         sr_levels_out
     ) = (levels_discovery(aggregated_filtered_df))
 
-    print('SR_levels_out: \n', sr_levels_out)
-    print('levels_startpoints: \n', levels_startpoints_to_chart)
-
     # Step 2: Add columns and levels to dataframe
     filtered_by_date_dataframe = filtered_by_date_dataframe.copy()
     column_counters = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe, levels_startpoints_to_chart)
@@ -189,7 +187,7 @@ def process_levels(filtered_by_date_dataframe, aggregated_filtered_df):
         fill_column_with_first_non_null_value(filtered_by_date_dataframe, column_index)
         print('7. Dataframe with level columns: \n', filtered_by_date_dataframe)    # .iloc[0:50]
     output_df_with_levels = filtered_by_date_dataframe.copy()
-
+    print('!!!!sr_levels_out inside process levels, compare to hardcoded', sr_levels_out)
     return (levels_startpoints_to_chart,
             levels_endpoints_to_chart,
             support_level_signal_running_out,
