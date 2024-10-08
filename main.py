@@ -1,16 +1,20 @@
 from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
 # from price_levels import process_levels
-from pivots import process_levels
+# from pivots import process_levels
+from price_levels_manual import process_levels
 """
 sig3 works interesting on hourly. draw too much levels (need to exclude premarket)
 enable 1minute simulation but on 1H OHLC (what happened first SL or TP)
 manual level entry as option to find out will it be more precise -> better outcome?
 """
 # from signals import level_rejection_signals
+# from signals_with_OB import level_rejection_signals
+from signals_with_OB_GPT import level_rejection_signals
 # from sig2 import level_rejection_signals
-from sig3 import level_rejection_signals
+# from sig3 import level_rejection_signals
 
 from trade_simulation import trades_simulation
+# from trade_simulation_next_candle import trades_simulation
 from trade_analysis import trades_analysis
 from analysis_charts import plot_line_chart_balance_change, plot_line_chart_profits_losses
 import matplotlib.pyplot as plt
@@ -22,11 +26,13 @@ from candlestick_chart import plot_candlestick_chart, plot_candlestick_chart_1h
 # Get the data
 # file_path = 'Bars/MESZ24_M1_202409160000_202409272059_w.csv'
 # file_path = 'Bars/2MESZ24_M1_202409160000_202409272059_w.csv'
-file_path = 'Bars/MESZ24_H1_w.csv'
+# file_path = 'Bars/MESZ24_H1_w.csv'
+file_path = 'Bars/MESZ24_M1_0801_w.csv'
+
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-19'  # Choose the start date to begin from
-end_date = '2024-09-19'  # Choose the end date
+start_date = '2024-09-23'  # Choose the start date to begin from
+end_date = '2024-09-23'  # Choose the end date
 
 # SIMULATION
 start_simulation = True
@@ -55,7 +61,7 @@ stop_loss_offset_multiplier = 0  # 1 places stop one candle away from H/L (only 
 
 # CHARTS
 show_candlestick_chart_m1 = True
-show_candlestick_chart_H1 = False
+show_candlestick_chart_H1 = True
 show_level_rejection_signals = True
 find_levels = True
 show_profits_losses_line_chart = False  # Only when Simulation is True
@@ -104,7 +110,7 @@ print('levels_points_for_chart: \n', levels_points_for_chart)
     # use_candle_close_as_entry
 )
 
-print('Rejection_signals_series: \n', rejection_signals_series_outside)
+print('Rejection_signals_series: \n', rejection_signals_series_outside)     # THIS SERIES GOES TO SIMULATION
 
 # =====================================================================================================================
 #   SIMULATION FUNCTION CALL
