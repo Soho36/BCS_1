@@ -48,7 +48,7 @@ shorts_allowed = True  # Allow or disallow trade direction
 # RISK MANAGEMENT
 
 spread = 0
-risk_reward_ratio = 1  # Chose risk/reward ratio (aiming to win compared to lose)
+risk_reward_ratio = 2  # Chose risk/reward ratio (aiming to win compared to lose)
 stop_loss_as_candle_min_max = True
 stop_loss_offset = 0.1  # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 # HAS TO BE >0 TO AVOID BOTH TRADES
@@ -61,7 +61,7 @@ stop_loss_offset_multiplier = 0  # 1 places stop one candle away from H/L (only 
 
 # CHARTS
 show_candlestick_chart_m1 = True
-show_candlestick_chart_H1 = True
+show_candlestick_chart_H1 = False
 show_level_rejection_signals = True
 find_levels = True
 show_profits_losses_line_chart = False  # Only when Simulation is True
@@ -85,11 +85,10 @@ aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataf
 (
     levels_startpoints_to_chart,
     levels_endpoints_to_chart,
-    support_level_signal_running_out,
-    resistance_level_signal_running_out,
+    # support_level_signal_running_out,
+    # resistance_level_signal_running_out,
     level_discovery_signals_series_out,
     sr_levels_out,
-    aggregated_filtered_df,
     output_df_with_levels
 ) = process_levels(
     filtered_by_date_dataframe_m1,

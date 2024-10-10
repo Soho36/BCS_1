@@ -34,6 +34,7 @@ def trades_simulation(
         profit_loss_long_short = []     # List of profits and losses by longs and shorts
 
         signal_series = rejection_signals_series_with_prices
+        print('signal_series', signal_series)
         for signal_index, (signal_value, price_level) in enumerate(signal_series):
 
             # LONG TRADES LOGIC

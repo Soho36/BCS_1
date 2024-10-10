@@ -2,48 +2,37 @@ import pandas as pd
 # import numpy as np
 
 
-def levels_discovery(agg_filtered_df):
+def levels_discovery(aggregated_filtered_df_h1):
     # Manually define the support and resistance levels (index or datetime and price level)
     # Format: [(index_or_datetime, price_level)]
-    hardcoded_support_levels = [('2024-09-23 10:00:00', 5783.60)]  # Example support levels
-    hardcoded_resistance_levels = [('2024-09-23 10:00:00', 5750.00)]  # Example resistance levels
+    hardcoded_sr_levels = [('2024-09-23 06:40:00', 5760.60)]  # Example support levels
 
-    hardcoded_support_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_support_levels]
-    hardcoded_resistance_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_resistance_levels]
+    hardcoded_sr_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_sr_levels]
 
     levels_startpoints_tuples = []
     levels_endpoints_tuples = []
-    support_levels = []
-    resistance_levels = []
+    # support_levels = []
+    # resistance_levels = []
     sr_levels = []  # Support/Resistance levels with index
     sr_levels_with_datetime = []  # Support/Resistance levels with datetime
 
     # Support levels
-    for datetime_1, price_level_1 in hardcoded_support_levels:
-        datetime_2 = agg_filtered_df.index[-1]  # Use the last datetime for endpoint
+    for datetime_1, price_level_1 in hardcoded_sr_levels:
+        datetime_2 = aggregated_filtered_df_h1.index[-1]  # Use the last datetime for endpoint
         levels_startpoints_tuples.append((datetime_1, price_level_1))
         levels_endpoints_tuples.append((datetime_2, price_level_1))
-        support_levels.append(price_level_1)
-        sr_levels.append((datetime_1, price_level_1))  # Store with index
-        sr_levels_with_datetime.append((datetime_1, price_level_1))
-
-    # Resistance levels
-    for datetime_1, price_level_1 in hardcoded_resistance_levels:
-        datetime_2 = agg_filtered_df.index[-1]  # Use the last datetime for endpoint
-        levels_startpoints_tuples.append((datetime_1, price_level_1))
-        levels_endpoints_tuples.append((datetime_2, price_level_1))
-        resistance_levels.append(price_level_1)
+        # support_levels.append(price_level_1)
         sr_levels.append((datetime_1, price_level_1))  # Store with index
         sr_levels_with_datetime.append((datetime_1, price_level_1))
 
     # Fill signals list with None as we are not generating discovery signals
-    level_discovery_signal = [None] * len(agg_filtered_df)
+    level_discovery_signal = [None] * len(aggregated_filtered_df_h1)
 
     return (
         levels_startpoints_tuples,
         levels_endpoints_tuples,
-        support_levels,
-        resistance_levels,
+        # support_levels,
+        # resistance_levels,
         pd.Series(level_discovery_signal),  # No discovery signals, just fill with None
         sr_levels  # The SR levels list with manually added levels
     )
@@ -115,16 +104,16 @@ def fill_column_with_first_non_null_value(df, column_idx):
 
 # filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
 # The rest of the process_levels function remains unchanged
-def process_levels(filtered_by_date_dataframe, aggregated_filtered_df):
+def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1):
     # Step 1: Discover levels
     (
         levels_startpoints_to_chart,
         levels_endpoints_to_chart,
-        support_level_signal_running_out,
-        resistance_level_signal_running_out,
+        # support_level_running_out,
+        # resistance_level_running_out,
         level_discovery_signals_series_out,
         sr_levels_out
-    ) = (levels_discovery(aggregated_filtered_df))
+    ) = (levels_discovery(aggregated_filtered_df_h1))
 
     print('SR_levels_out: \n', sr_levels_out)
     print('levels_startpoints: \n', levels_startpoints_to_chart)
@@ -142,9 +131,8 @@ def process_levels(filtered_by_date_dataframe, aggregated_filtered_df):
 
     return (levels_startpoints_to_chart,
             levels_endpoints_to_chart,
-            support_level_signal_running_out,
-            resistance_level_signal_running_out,
+            # support_level_running_out,
+            # resistance_level_running_out,
             level_discovery_signals_series_out,
             sr_levels_out,
-            aggregated_filtered_df,
             output_df_with_levels)

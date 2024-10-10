@@ -9,10 +9,8 @@ def level_rejection_signals(df, sr_levels_out):
     df.reset_index(inplace=True)
 
     for index, row in df.iterrows():
-        # if index == 0:
-        #     continue  # Skip the first row since we need a previous candle for comparison
 
-        previous_close = df.iloc[index - 1]['Close']
+        previous_close = df.iloc[index - 1]['Close'] if index > 0 else None  # Handle first row case
         current_candle_close = row['Close']
         current_candle_high = row['High']
         current_candle_low = row['Low']
@@ -25,32 +23,28 @@ def level_rejection_signals(df, sr_levels_out):
             if current_sr_level is not None:
 
                 # Check for short signal: over-under condition
-                if previous_close < current_sr_level:   # Previous candle close was below the level
-                    if current_candle_high > current_sr_level:  # Current candle crossed above the level
-                        if current_candle_close < current_sr_level:  # but closed below
-                            signal_candle_close = current_candle_close  # Store signal candle close
-                            # Loop through subsequent candles for confirmation
-                            for subsequent_index in range(index + 1, len(df)):
-                                subsequent_row = df.iloc[subsequent_index]
-                                if subsequent_row['Close'] < signal_candle_close:  # Confirming condition: next close below signal candle
-                                    signal = -100
-                                    price_level = current_sr_level
-                                    break
-                            break
+                if previous_close is not None and previous_close < current_sr_level:   # Previous candle close was below the level
+                    if current_candle_high > current_sr_level and current_candle_close < current_sr_level:
+                        # Over-Under condition met
+                        signal_candle_close = current_candle_close  # Store signal candle close
 
-                # Check for long signal: under-over condition
-                elif previous_close > current_sr_level:   # Previous close was above the level
-                    if current_candle_low < current_sr_level:  # Price crossed below the level
-                        if current_candle_close > current_sr_level:  # but closed above
-                            signal_candle_close = current_candle_close  # Store signal candle close
-                            # Loop through subsequent candles for confirmation
-                            for subsequent_index in range(index + 1, len(df)):
-                                subsequent_row = df.iloc[subsequent_index]
-                                if subsequent_row['Close'] > signal_candle_close:  # Confirming condition: next close above signal candle
-                                    signal = 100
-                                    price_level = current_sr_level
-                                    break
-                            break
+                        # Loop through subsequent candles for confirmation (find first green candle)
+                        for subsequent_index in range(index + 1, len(df)):
+                            subsequent_row = df.iloc[subsequent_index]
+                            if subsequent_row['Close'] > subsequent_row['Open']:  # First green candle found
+                                green_candle_low = subsequent_row['Low']
+
+                                # Wait for price to hit the low of the first green candle
+                                for next_index in range(subsequent_index + 1, len(df)):
+                                    next_row = df.iloc[next_index]  # Correctly accessing rows
+                                    if next_row['Low'] <= green_candle_low:
+                                        signal = -100  # Short signal
+                                        price_level = green_candle_low  # Enter at the low of the first green candle
+                                        break
+                                break
+                        break
+
+                # Long signal logic here (under-over) - not mentioned for short signal, so it's omitted
 
         rejection_signals_with_prices.append((signal, price_level))
         rejection_signals_for_chart.append(signal)
