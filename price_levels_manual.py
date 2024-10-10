@@ -5,14 +5,12 @@ import pandas as pd
 def levels_discovery(aggregated_filtered_df_h1):
     # Manually define the support and resistance levels (index or datetime and price level)
     # Format: [(index_or_datetime, price_level)]
-    hardcoded_sr_levels = [('2024-09-23 06:40:00', 5760.60)]  # Example support levels
+    hardcoded_sr_levels = [('2024-09-23 06:40:00', 5783.00)]  # Example support levels
 
     hardcoded_sr_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_sr_levels]
 
     levels_startpoints_tuples = []
     levels_endpoints_tuples = []
-    # support_levels = []
-    # resistance_levels = []
     sr_levels = []  # Support/Resistance levels with index
     sr_levels_with_datetime = []  # Support/Resistance levels with datetime
 
@@ -31,8 +29,6 @@ def levels_discovery(aggregated_filtered_df_h1):
     return (
         levels_startpoints_tuples,
         levels_endpoints_tuples,
-        # support_levels,
-        # resistance_levels,
         pd.Series(level_discovery_signal),  # No discovery signals, just fill with None
         sr_levels  # The SR levels list with manually added levels
     )
@@ -102,15 +98,11 @@ def fill_column_with_first_non_null_value(df, column_idx):
                 df.loc[idx, column_idx] = value_to_fill
 
 
-# filtered_by_date_dataframe.set_index('DateTime', inplace=True)  # Contains levels columns
-# The rest of the process_levels function remains unchanged
 def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1):
     # Step 1: Discover levels
     (
         levels_startpoints_to_chart,
         levels_endpoints_to_chart,
-        # support_level_running_out,
-        # resistance_level_running_out,
         level_discovery_signals_series_out,
         sr_levels_out
     ) = (levels_discovery(aggregated_filtered_df_h1))
@@ -131,8 +123,6 @@ def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1):
 
     return (levels_startpoints_to_chart,
             levels_endpoints_to_chart,
-            # support_level_running_out,
-            # resistance_level_running_out,
             level_discovery_signals_series_out,
             sr_levels_out,
             output_df_with_levels)

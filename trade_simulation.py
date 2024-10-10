@@ -35,7 +35,7 @@ def trades_simulation(
 
         signal_series = rejection_signals_series_with_prices
         print('signal_series', signal_series)
-        for signal_index, (signal_value, price_level) in enumerate(signal_series):
+        for (signal_index, signal_value, price_level) in signal_series:
 
             # LONG TRADES LOGIC
             if signal_value == 100 and longs_allowed:
