@@ -4,6 +4,7 @@ import pandas as pd
 def level_rejection_signals(df, sr_levels_out):
     rejection_signals_with_prices = []
     rejection_signals_for_chart = []
+    ob_candle_for_chart = []
 
     df.reset_index(inplace=True)
 
@@ -16,6 +17,7 @@ def level_rejection_signals(df, sr_levels_out):
         print(f"---\nAnalyzing candle at index {index}, Time: {current_candle_time}, Close: {current_candle_close}, High: {current_candle_high}")
 
         signal = None  # Reset signal for each row
+        ob_signal = None
         price_level = None
         signal_index = None  # Initialize signal_index
         subsequent_index = None     # Initialize subsequent_index
@@ -41,6 +43,7 @@ def level_rejection_signals(df, sr_levels_out):
                             if subsequent_row['Close'] > subsequent_row['Open']:  # First green candle found
                                 green_candle_low = subsequent_row['Low']
                                 green_candle_found = True
+                                ob_signal = -10
                                 print(f"First green candle found at index {subsequent_index}, Time: {subsequent_time}, Low: {green_candle_low}")
                                 break  # Exit loop after finding the first green candle
 
@@ -61,16 +64,18 @@ def level_rejection_signals(df, sr_levels_out):
         # Append values with None for signals not triggered
         rejection_signals_with_prices.append((signal_index, signal, price_level))
         rejection_signals_for_chart.append((signal_index, signal))
+        ob_candle_for_chart.append((subsequent_index, ob_signal))
 
     # Print signals for verification
-    print("\nRejection signals with prices:")
-    for signal_index, signal, price_level in rejection_signals_with_prices:
-        print(f"Index: {signal_index}, Signal: {signal}, Price Level: {price_level}")
-
-    print("\nRejection signals for chart:")
-    for signal_index, signal in rejection_signals_for_chart:
-        print(f"Index: {signal_index}, Signal: {signal}")
+    # print("\nRejection signals with prices:")
+    # for signal_index, signal, price_level in rejection_signals_with_prices:
+    #     print(f"Index: {signal_index}, Signal: {signal}, Price Level: {price_level}")
+    #
+    # print("\nRejection signals for chart:")
+    # for signal_index, signal in rejection_signals_for_chart:
+    #     print(f"Index: {signal_index}, Signal: {signal}")
 
     rejection_signals_series_with_prices = pd.Series(rejection_signals_with_prices)
     rejection_signals_series_for_chart = pd.Series(rejection_signals_for_chart)
-    return rejection_signals_series_with_prices, rejection_signals_series_for_chart
+    ob_candle_series_for_chart = pd.Series(ob_candle_for_chart)
+    return rejection_signals_series_with_prices, rejection_signals_series_for_chart, ob_candle_series_for_chart

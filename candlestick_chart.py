@@ -11,6 +11,7 @@ def plot_candlestick_chart(
         df,
         level_discovery_signals_series,
         rejection_signals_series,
+        ob_candle_series_for_chart,
         show_candlestick_chart_m1,
         find_levels,
         levels_points_for_chart,
@@ -26,10 +27,11 @@ def plot_candlestick_chart(
         plots_list = []
         # Create an empty series with NaN values, having the same index as your original DataFrame df:
         signal_series_for_chart = pd.Series([np.nan] * len(df), index=df.index)
+        ob_candle_series_for_chart2 = pd.Series([np.nan] * len(df), index=df.index)
 
         # Populate signal series with valid signals
         for signal_index, signal_value in rejection_signals_series:
-            if signal_value is not None:  # Check if the signal value is valid
+            if signal_value == -100 or signal_value == 100:  # Check if the signal value is valid
                 signal_series_for_chart.iloc[signal_index] = signal_value
 
         # Append once, after filling the series
@@ -46,6 +48,26 @@ def plot_candlestick_chart(
             )
         else:
             print("No valid signals to plot.")
+
+        for signal_index, signal_value in ob_candle_series_for_chart:
+            if signal_value == -10 or signal_value == 10:  # Check if the signal value is valid
+                ob_candle_series_for_chart2.iloc[signal_index] = signal_value
+
+        # Append once, after filling the series
+        if not ob_candle_series_for_chart2.isna().all():
+            plots_list.append(
+                mpf.make_addplot(
+                    ob_candle_series_for_chart2,
+                    type='scatter',
+                    color='black',
+                    markersize=250,
+                    marker='*',
+                    panel=1
+                )
+            )
+        else:
+            print("No valid signals to plot.")
+
 
         if find_levels:
             mpf.plot(

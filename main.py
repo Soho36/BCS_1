@@ -101,12 +101,11 @@ print('levels_points_for_chart: \n', levels_points_for_chart)
 
 (
     rejection_signals_series_outside,
-    rejection_signals_series_for_chart_outside
+    rejection_signals_series_for_chart_outside,
+    ob_candle_series_for_chart
 ) = level_rejection_signals(
     output_df_with_levels,
-    sr_levels_out,
-    # use_level_price_as_entry,
-    # use_candle_close_as_entry
+    sr_levels_out
 )
 
 print('Rejection_signals_series: \n', rejection_signals_series_outside)     # THIS SERIES GOES TO SIMULATION
@@ -191,6 +190,7 @@ try:
         filtered_by_date_dataframe_m1,
         level_discovery_signals_series_out,
         rejection_signals_series_for_chart_outside,
+        ob_candle_series_for_chart,
         show_candlestick_chart_m1,
         find_levels,
         levels_points_for_chart,
