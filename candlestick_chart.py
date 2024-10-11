@@ -1,4 +1,6 @@
 import mplfinance as mpf
+import numpy as np
+import pandas as pd
 
 # =====================================================================================================================
 # 1 - MINUTE CHART
@@ -22,19 +24,28 @@ def plot_candlestick_chart(
     if show_candlestick_chart_m1:
 
         plots_list = []
+        # Create an empty series with NaN values, having the same index as your original DataFrame df:
+        signal_series_for_chart = pd.Series([np.nan] * len(df), index=df.index)
 
-        for i, s in enumerate(rejection_signals_series):
-            if s != 'NaN':
-                plots_list.append(
-                    mpf.make_addplot(
-                        rejection_signals_series,
-                        type='scatter',
-                        color='black',
-                        markersize=250,
-                        marker='+',
-                        panel=1))
+        # Populate signal series with valid signals
+        for signal_index, signal_value in rejection_signals_series:
+            if signal_value is not None:  # Check if the signal value is valid
+                signal_series_for_chart.iloc[signal_index] = signal_value
 
-        print()
+        # Append once, after filling the series
+        if not signal_series_for_chart.isna().all():
+            plots_list.append(
+                mpf.make_addplot(
+                    signal_series_for_chart,
+                    type='scatter',
+                    color='black',
+                    markersize=250,
+                    marker='+',
+                    panel=1
+                )
+            )
+        else:
+            print("No valid signals to plot.")
 
         if find_levels:
             mpf.plot(
@@ -47,7 +58,6 @@ def plot_candlestick_chart(
                 addplot=plots_list,
                 block=False
             )
-
         else:
             mpf.plot(
                 df,
@@ -56,8 +66,9 @@ def plot_candlestick_chart(
                 style='yahoo',
                 title=f'{ticker_name}'.upper(),
                 addplot=plots_list,
-                blok=False
+                block=False
             )
+
 
 # =====================================================================================================================
 # HOURLY CHART

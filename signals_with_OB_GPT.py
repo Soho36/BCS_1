@@ -4,8 +4,6 @@ import pandas as pd
 def level_rejection_signals(df, sr_levels_out):
     rejection_signals_with_prices = []
     rejection_signals_for_chart = []
-    rejection_signals_with_prices2 = []
-    rejection_signals_for_chart2 = []
 
     df.reset_index(inplace=True)
 
@@ -61,18 +59,16 @@ def level_rejection_signals(df, sr_levels_out):
                         break  # Exit the level loop once a signal is generated
 
         # Append values with None for signals not triggered
-        rejection_signals_with_prices.append((signal, price_level))
-        rejection_signals_for_chart.append(signal)
-        rejection_signals_with_prices2.append((signal, price_level, signal_index))
-        rejection_signals_for_chart2.append((signal, signal_index))
+        rejection_signals_with_prices.append((signal_index, signal, price_level))
+        rejection_signals_for_chart.append((signal_index, signal))
 
     # Print signals for verification
     print("\nRejection signals with prices:")
-    for signal, price_level, signal_index in rejection_signals_with_prices2:
+    for signal_index, signal, price_level in rejection_signals_with_prices:
         print(f"Index: {signal_index}, Signal: {signal}, Price Level: {price_level}")
 
     print("\nRejection signals for chart:")
-    for signal, signal_index in rejection_signals_for_chart2:
+    for signal_index, signal in rejection_signals_for_chart:
         print(f"Index: {signal_index}, Signal: {signal}")
 
     rejection_signals_series_with_prices = pd.Series(rejection_signals_with_prices)

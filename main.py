@@ -215,3 +215,4 @@ except KeyboardInterrupt:
     print('Program stopped manually')
 
 plt.show()  # Show all charts
+
