@@ -1,11 +1,12 @@
 import pandas as pd
 
 
-def level_rejection_signals(df, sr_levels_out):
+def level_rejection_signals(df, sr_levels_out, over_under_threshold):
     rejection_signals_with_prices = []
     rejection_signals_for_chart = []
     ob_candle_for_chart = []
-    under_over_for_chart = []
+    over_under_for_chart = []
+    over_under_counter = 0      # Prevent too many signals from the same level
 
     df.reset_index(inplace=True)
 
@@ -25,80 +26,92 @@ def level_rejection_signals(df, sr_levels_out):
         price_level = None
         signal_index = None  # Initialize signal_index
         subsequent_index = None     # Initialize subsequent_index
-        under_over_signal = None
+        over_under_signal = None
 
-        for level_column in range(1, len(sr_levels_out) + 1):
-            current_sr_level = row[level_column]
-            if current_sr_level is not None:
+        if over_under_counter < over_under_threshold:
+            for level_column in range(1, len(sr_levels_out) + 1):
+                current_sr_level = row[level_column]
+                if current_sr_level is not None:
 
-                # Check for short signal: over-under condition
-                if previous_close is not None and previous_close < current_sr_level:  # Previous close was below level
-                    if current_candle_high > current_sr_level:
-                        if current_candle_close < current_sr_level:
-                            # Over-Under condition met
-                            under_over_signal = -100
-                            print(f"Over-under condition met at index {index}, "
-                                  f"Time: {current_candle_time}, "
-                                  f"SR level: {current_sr_level}")
+                    # Check for short signal: over-under condition
+                    if previous_close is not None and previous_close < current_sr_level:  # Previous close was below level
+                        if current_candle_high > current_sr_level:
+                            if current_candle_close < current_sr_level:
+                                # Over-Under condition met
+                                over_under_signal = -100
+                                over_under_counter += 1
+                                print(f"Over-under condition met at index {index}, "
+                                      f"Time: {current_candle_time}, "
+                                      f"SR level: {current_sr_level}")
 
-                            # Step 1: Find the first green candle (where close > open)
-                            green_candle_found = False
-                            green_candle_low = None
+                                # Step 1: Find the first green candle (where close > open)
+                                green_candle_found = False
+                                green_candle_low = None
 
-                            for subsequent_index in range(index + 1, len(df)):
-                                subsequent_row = df.iloc[subsequent_index]
-                                subsequent_time = subsequent_row['Time']  # Use the correct time for the subsequent row
-                                print(f"Looking for GREEN candle at index {subsequent_index}, "
-                                      f"Time: {subsequent_time}, Close: {subsequent_row['Close']}, "
-                                      f"Open: {subsequent_row['Open']}")
-                                if subsequent_row['Close'] > subsequent_row['Open']:  # First green candle found
-                                    green_candle_low = subsequent_row['Low']
-                                    green_candle_found = True
-                                    ob_signal = -100
-                                    print(f"First GREEN candle found at index {subsequent_index}, "
-                                          f"Time: {subsequent_time}, "
-                                          f"Low: {green_candle_low}")
-                                    break  # Exit loop after finding the first green candle
+                                for subsequent_index in range(index + 1, len(df)):
+                                    subsequent_row = df.iloc[subsequent_index]
+                                    subsequent_time = subsequent_row['Time']  # Time for the subsequent row
+                                    print(f"Looking for GREEN candle at index {subsequent_index}, "
+                                          f"Time: {subsequent_time}, Close: {subsequent_row['Close']}, "
+                                          f"Open: {subsequent_row['Open']}")
+                                    if subsequent_row['Close'] > subsequent_row['Open']:  # First green candle found
+                                        print(f"GREEN candle found at index {subsequent_index}, "
+                                              f"Time: {subsequent_time}, ")
 
-                            # Step 2: After finding the green candle, wait for the price to hit its low
-                            if green_candle_found:
-                                for next_index in range(subsequent_index + 1, len(df)):
-                                    next_row = df.iloc[next_index]
-                                    next_time = next_row['Time']  # Use the correct time for the next row
-                                    print(f"Looking for next candle to close under GREEN candle low at {next_index}, "
-                                          f"Time: {next_time}, "
-                                          f"Low: {next_row['Low']}, "
-                                          f"Target green candle low: {green_candle_low}")
-                                    if next_row['Close'] < green_candle_low:  # Price hits the low of the green candle
-                                        signal = -100  # Short signal
-                                        price_level = next_row['Close']  # Enter at the low of the first green candle
-                                        signal_index = next_index  # Assign signal_index here
-                                        print(f"Signal triggered at index {next_index}, "
+                                        if subsequent_row['Close'] < current_sr_level:  # Candle must be under the level
+                                            green_candle_low = subsequent_row['Low']
+                                            green_candle_found = True
+                                            ob_signal = -100
+                                            print(f"And it is valid. Creating the signal at index: {subsequent_index}, "
+                                                  f"Time: {subsequent_time}, "
+                                                  f"Low: {green_candle_low}")
+
+                                            break  # Exit loop after finding the first green candle
+                                        else:
+                                            print(f"But it is not below the level. Checking next candle...")
+
+                                # Step 2: After finding the green candle, wait for the price to hit its low
+                                if green_candle_found:
+                                    for next_index in range(subsequent_index + 1, len(df)):
+                                        next_row = df.iloc[next_index]
+                                        next_time = next_row['Time']  # Use the correct time for the next row
+                                        print(f"Waiting for next candle to close under GREEN candle low at {next_index},"
                                               f"Time: {next_time}, "
-                                              f"Price level: {price_level}")
+                                              f"Low: {next_row['Low']}")
+                                        if next_row['Close'] < green_candle_low:  # Price hits the low of the green candle
+                                            signal = -100  # Short signal
+                                            price_level = next_row['Close']  # Enter at the low of the first green candle
+                                            signal_index = next_index  # Assign signal_index here
+                                            print(f"It did. Signal triggered at index {next_index}, "
+                                                  f"Time: {next_time}, "
+                                                  f"Price level: {price_level}")
+                                            break
+                                        elif next_row['Close'] > next_row['Open']:
+                                            green_candle_low = next_row['Low']
+                                            print(f"New green candle formed at index {next_index},"
+                                                  f"Time: {next_time}, "
+                                                  f"New Target Low: {green_candle_low}")
+                                            subsequent_index = next_index
+
+                                    else:
                                         break
-                                    elif next_row['Close'] > next_row['Open']:
-                                        green_candle_low = next_row['Low']
-                                        print(f"New green candle found at index {next_index}, "
-                                              f"Time: {next_time}, "
-                                              f"New Target Low: {green_candle_low}")
-                                        subsequent_index = next_index
+                                break  # Exit the level loop once a signal is generated
 
-                                else:
-                                    break
-                            break  # Exit the level loop once a signal is generated
-
-        # Append values with None for signals not triggered
-        rejection_signals_with_prices.append((signal_index, signal, price_level))
-        rejection_signals_for_chart.append((signal_index, signal))
-        ob_candle_for_chart.append((subsequent_index, ob_signal))
-        under_over_for_chart.append((index, under_over_signal))
+            # Append values with None for signals not triggered
+            rejection_signals_with_prices.append((signal_index, signal, price_level))
+            rejection_signals_for_chart.append((signal_index, signal))
+            ob_candle_for_chart.append((subsequent_index, ob_signal))
+            over_under_for_chart.append((index, over_under_signal))
+        else:
+            print("Level rejections max number reached")
+            # return over_under_counter
 
     rejection_signals_series_with_prices = pd.Series(rejection_signals_with_prices)
     rejection_signals_series_for_chart = pd.Series(rejection_signals_for_chart)
     ob_candle_series_for_chart = pd.Series(ob_candle_for_chart)
-    under_over_series_for_chart = pd.Series(under_over_for_chart)
+    over_under_series_for_chart = pd.Series(over_under_for_chart)
     return (rejection_signals_series_with_prices,
             rejection_signals_series_for_chart,
             ob_candle_series_for_chart,
-            under_over_series_for_chart)
+            over_under_series_for_chart,
+            over_under_counter)

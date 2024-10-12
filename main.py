@@ -39,6 +39,7 @@ end_date = '2024-09-23'  # Choose the end date
 start_simulation = True
 
 # ENTRY CONDITIONS
+over_under_threshold = 1
 new_trades_threshold = 0  # Reject new trades placement within this period (min)
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
@@ -62,7 +63,7 @@ stop_loss_offset_multiplier = 0  # 1 places stop one candle away from H/L (only 
 
 # CHARTS
 show_candlestick_chart_m1 = True
-show_candlestick_chart_H1 = False
+show_candlestick_chart_H1 = True
 show_level_rejection_signals = True
 find_levels = True
 show_profits_losses_line_chart = False  # Only when Simulation is True
@@ -110,11 +111,12 @@ print('44. levels_points_for_chart: \n', levels_points_for_chart)
     rejection_signals_series_outside,
     rejection_signals_series_for_chart_outside,
     ob_candle_series_for_chart,
-    under_over_series_for_chart
-
+    under_over_series_for_chart,
+    over_under_counter
 ) = level_rejection_signals(
     output_df_with_levels,
-    sr_levels_out
+    sr_levels_out,
+    over_under_threshold
 )
 
 print('Rejection_signals_series: \n', rejection_signals_series_outside)     # THIS SERIES GOES TO SIMULATION

@@ -84,7 +84,7 @@ def plot_candlestick_chart(
                     type='scatter',
                     color='green',
                     markersize=250,
-                    marker='_',
+                    marker='x',
                     panel=1
                 )
             )
