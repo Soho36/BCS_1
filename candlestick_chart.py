@@ -59,7 +59,7 @@ def plot_candlestick_chart(
                 mpf.make_addplot(
                     ob_candle_series_for_chart2,
                     type='scatter',
-                    color='black',
+                    color='green',
                     markersize=250,
                     marker='*',
                     panel=1
@@ -67,7 +67,6 @@ def plot_candlestick_chart(
             )
         else:
             print("No valid signals to plot.")
-
 
         if find_levels:
             mpf.plot(
@@ -114,17 +113,6 @@ def plot_candlestick_chart_1h(
     if show_candlestick_chart_h1:
 
         plots_list = []
-
-        # for i, s in enumerate(rejection_signals_series):
-        #     if s != 'NaN':
-        #         plots_list.append(
-        #             mpf.make_addplot(
-        #                 rejection_signals_series,
-        #                 type='scatter',
-        #                 color='black',
-        #                 markersize=250,
-        #                 marker='+',
-        #                 panel=1))
 
         print()
 

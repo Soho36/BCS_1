@@ -95,17 +95,15 @@ aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataf
     filtered_by_date_dataframe_m1,
     aggregated_filtered_dataframe_h1
 )
-# sr_levels_out_hardcoded = [(4, np.float64(5699.15)), (7, np.float64(5700.0)), (14, np.float64(5669.25))]
-print('55. support_level_signal_running_out', support_level_signal_running_out)
-print('66. resistance_level_signal_running_out', resistance_level_signal_running_out)
+
+# print('55. support_level_signal_running_out', support_level_signal_running_out)
+# print('66. resistance_level_signal_running_out', resistance_level_signal_running_out)
 print('77.sr_levels_out', sr_levels_out)
-# print('????sr_levels_out_hardcoded', sr_levels_out_hardcoded)
+
 
 #   Will be used in charting:
-# levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
-levels_points_for_chart = [
-    [('2024-09-16 09:00:00', 5699.75), ('2024-09-16 23:00:00', 5699.75)]
-]
+levels_points_for_chart = [[a, b] for a, b in zip(levels_startpoints_to_chart, levels_endpoints_to_chart)]
+
 print('44. levels_points_for_chart: \n', levels_points_for_chart)
 
 (
