@@ -5,6 +5,7 @@ def level_rejection_signals(df, sr_levels_out):
     rejection_signals_with_prices = []
     rejection_signals_for_chart = []
     ob_candle_for_chart = []
+    under_over_for_chart = []
 
     df.reset_index(inplace=True)
 
@@ -24,6 +25,7 @@ def level_rejection_signals(df, sr_levels_out):
         price_level = None
         signal_index = None  # Initialize signal_index
         subsequent_index = None     # Initialize subsequent_index
+        under_over_signal = None
 
         for level_column in range(1, len(sr_levels_out) + 1):
             current_sr_level = row[level_column]
@@ -34,6 +36,7 @@ def level_rejection_signals(df, sr_levels_out):
                     if current_candle_high > current_sr_level:
                         if current_candle_close < current_sr_level:
                             # Over-Under condition met
+                            under_over_signal = -100
                             print(f"Over-under condition met at index {index}, "
                                   f"Time: {current_candle_time}, "
                                   f"SR level: {current_sr_level}")
@@ -51,7 +54,7 @@ def level_rejection_signals(df, sr_levels_out):
                                 if subsequent_row['Close'] > subsequent_row['Open']:  # First green candle found
                                     green_candle_low = subsequent_row['Low']
                                     green_candle_found = True
-                                    ob_signal = -10
+                                    ob_signal = -100
                                     print(f"First GREEN candle found at index {subsequent_index}, "
                                           f"Time: {subsequent_time}, "
                                           f"Low: {green_candle_low}")
@@ -89,8 +92,13 @@ def level_rejection_signals(df, sr_levels_out):
         rejection_signals_with_prices.append((signal_index, signal, price_level))
         rejection_signals_for_chart.append((signal_index, signal))
         ob_candle_for_chart.append((subsequent_index, ob_signal))
+        under_over_for_chart.append((index, under_over_signal))
 
     rejection_signals_series_with_prices = pd.Series(rejection_signals_with_prices)
     rejection_signals_series_for_chart = pd.Series(rejection_signals_for_chart)
     ob_candle_series_for_chart = pd.Series(ob_candle_for_chart)
-    return rejection_signals_series_with_prices, rejection_signals_series_for_chart, ob_candle_series_for_chart
+    under_over_series_for_chart = pd.Series(under_over_for_chart)
+    return (rejection_signals_series_with_prices,
+            rejection_signals_series_for_chart,
+            ob_candle_series_for_chart,
+            under_over_series_for_chart)

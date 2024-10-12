@@ -12,6 +12,7 @@ def plot_candlestick_chart(
         level_discovery_signals_series,
         rejection_signals_series,
         ob_candle_series_for_chart,
+        under_over_series_for_chart,
         show_candlestick_chart_m1,
         find_levels,
         levels_points_for_chart,
@@ -25,11 +26,12 @@ def plot_candlestick_chart(
     if show_candlestick_chart_m1:
 
         plots_list = []
-        # Create an empty series with NaN values, having the same index as your original DataFrame df:
+        # Create an empty series with NaN values, having the same index as original DataFrame df:
         signal_series_for_chart = pd.Series([np.nan] * len(df), index=df.index)
         ob_candle_series_for_chart2 = pd.Series([np.nan] * len(df), index=df.index)
+        under_over_series_for_chart2 = pd.Series([np.nan] * len(df), index=df.index)
 
-        # Populate signal series with valid signals
+        # Populate empty series with valid OPEN TRADE signals
         for signal_index, signal_value in rejection_signals_series:
             if signal_value == -100 or signal_value == 100:  # Check if the signal value is valid
                 signal_series_for_chart.iloc[signal_index] = signal_value
@@ -49,8 +51,9 @@ def plot_candlestick_chart(
         else:
             print("No valid signals to plot.")
 
+        # Populate empty series with valid OB CANDLE signals
         for signal_index, signal_value in ob_candle_series_for_chart:
-            if signal_value == -10 or signal_value == 10:  # Check if the signal value is valid
+            if signal_value == -100 or signal_value == 100:  # Check if the signal value is valid
                 ob_candle_series_for_chart2.iloc[signal_index] = signal_value
 
         # Append once, after filling the series
@@ -62,6 +65,26 @@ def plot_candlestick_chart(
                     color='green',
                     markersize=250,
                     marker='*',
+                    panel=1
+                )
+            )
+        else:
+            print("No valid signals to plot.")
+
+        # Populate empty series with valid OB CANDLE signals
+        for signal_index, signal_value in under_over_series_for_chart:
+            if signal_value == -100 or signal_value == 100:  # Check if the signal value is valid
+                under_over_series_for_chart2.iloc[signal_index] = signal_value
+
+        # Append once, after filling the series
+        if not under_over_series_for_chart2.isna().all():
+            plots_list.append(
+                mpf.make_addplot(
+                    under_over_series_for_chart2,
+                    type='scatter',
+                    color='green',
+                    markersize=250,
+                    marker='_',
                     panel=1
                 )
             )

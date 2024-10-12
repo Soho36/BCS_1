@@ -5,7 +5,7 @@ import pandas as pd
 def levels_discovery(aggregated_filtered_df_h1):
     # Manually define the support and resistance levels (index or datetime and price level)
     # Format: [(index_or_datetime, price_level)]
-    hardcoded_sr_levels = [('2024-09-23 06:40:00', 5783.30)]  # Example support levels
+    hardcoded_sr_levels = [('2024-09-23 06:40:00', 5782.55)]  # Example support levels
 
     hardcoded_sr_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_sr_levels]
 

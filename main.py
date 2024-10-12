@@ -109,7 +109,9 @@ print('44. levels_points_for_chart: \n', levels_points_for_chart)
 (
     rejection_signals_series_outside,
     rejection_signals_series_for_chart_outside,
-    ob_candle_series_for_chart
+    ob_candle_series_for_chart,
+    under_over_series_for_chart
+
 ) = level_rejection_signals(
     output_df_with_levels,
     sr_levels_out
@@ -198,6 +200,7 @@ try:
         level_discovery_signals_series_out,
         rejection_signals_series_for_chart_outside,
         ob_candle_series_for_chart,
+        under_over_series_for_chart,
         show_candlestick_chart_m1,
         find_levels,
         levels_points_for_chart,
