@@ -10,8 +10,7 @@ manual level entry as option to find out will it be more precise -> better outco
 # from signals import level_rejection_signals
 # from signals_with_OB import level_rejection_signals
 from signals_with_OB_GPT import level_rejection_signals
-# from sig2 import level_rejection_signals
-# from sig3 import level_rejection_signals
+
 
 from simulation import trades_simulation
 # from trade_simulation_next_candle import trades_simulation
@@ -37,13 +36,20 @@ end_date = '2024-09-23'  # Choose the end date
 
 # Manually define the support and resistance levels
 # Format: [(index_or_datetime, price_level)]
-hardcoded_sr_levels = [('2024-09-23 03:01:00', 5781.84), ('2024-09-23 19:13:00', 5778.00)]  # Example support levels
+hardcoded_sr_levels = [
+    ('2024-09-23 03:01:00', 5781.84),
+    ('2024-09-23 11:01:00', 5764.00),
+]  # Example support levels
+
+# hardcoded_sr_levels = [
+#     ('2024-09-23 02:01:00', 5765.00)
+# ]  # Example support levels
 
 # SIMULATION
 start_simulation = True
 
 # ENTRY CONDITIONS
-over_under_threshold = 2
+over_under_threshold = 1
 new_trades_threshold = 0  # Reject new trades placement within this period (min)
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
@@ -54,7 +60,7 @@ shorts_allowed = True  # Allow or disallow trade direction
 # RISK MANAGEMENT
 
 spread = 0
-risk_reward_ratio = 2  # Chose risk/reward ratio (aiming to win compared to lose)
+risk_reward_ratio = 1  # Chose risk/reward ratio (aiming to win compared to lose)
 stop_loss_as_candle_min_max = True
 stop_loss_offset = 0.1  # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 # HAS TO BE >0 TO AVOID BOTH TRADES

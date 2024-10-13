@@ -109,7 +109,7 @@ def trades_simulation(
 
                     if current_candle_low <= stop_loss_price and current_candle_high >= take_profit_price:
                         trade_result_both.append(1)
-                        print('BOTH')
+                        print('!!! BOTH !!!')
 
                     if current_candle_low <= stop_loss_price:
                         trade_result.append((stop_loss_price - spread) -
