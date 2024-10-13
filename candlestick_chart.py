@@ -42,7 +42,7 @@ def plot_candlestick_chart(
                 mpf.make_addplot(
                     signal_series_for_chart,
                     type='scatter',
-                    color='black',
+                    color='green',
                     markersize=250,
                     marker='+',
                     panel=1
@@ -62,7 +62,7 @@ def plot_candlestick_chart(
                 mpf.make_addplot(
                     ob_candle_series_for_chart2,
                     type='scatter',
-                    color='green',
+                    color='orange',
                     markersize=250,
                     marker='*',
                     panel=1
@@ -82,7 +82,7 @@ def plot_candlestick_chart(
                 mpf.make_addplot(
                     under_over_series_for_chart2,
                     type='scatter',
-                    color='green',
+                    color='red',
                     markersize=250,
                     marker='x',
                     panel=1

@@ -13,9 +13,9 @@ from signals_with_OB_GPT import level_rejection_signals
 # from sig2 import level_rejection_signals
 # from sig3 import level_rejection_signals
 
-from trade_simulation import trades_simulation
+from simulation import trades_simulation
 # from trade_simulation_next_candle import trades_simulation
-from trade_analysis import trades_analysis
+from analysis import trades_analysis
 from analysis_charts import plot_line_chart_balance_change, plot_line_chart_profits_losses
 import matplotlib.pyplot as plt
 from candlestick_chart import plot_candlestick_chart, plot_candlestick_chart_1h
@@ -35,11 +35,15 @@ dataframe_from_csv = getting_dataframe_from_file(file_path)
 start_date = '2024-09-23'  # Choose the start date to begin from
 end_date = '2024-09-23'  # Choose the end date
 
+# Manually define the support and resistance levels
+# Format: [(index_or_datetime, price_level)]
+hardcoded_sr_levels = [('2024-09-23 03:01:00', 5781.84), ('2024-09-23 19:13:00', 5778.00)]  # Example support levels
+
 # SIMULATION
 start_simulation = True
 
 # ENTRY CONDITIONS
-over_under_threshold = 1
+over_under_threshold = 2
 new_trades_threshold = 0  # Reject new trades placement within this period (min)
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
@@ -94,7 +98,8 @@ aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataf
     output_df_with_levels
 ) = process_levels(
     filtered_by_date_dataframe_m1,
-    aggregated_filtered_dataframe_h1
+    aggregated_filtered_dataframe_h1,
+    hardcoded_sr_levels
 )
 
 # print('55. support_level_signal_running_out', support_level_signal_running_out)

@@ -2,10 +2,7 @@ import pandas as pd
 # import numpy as np
 
 
-def levels_discovery(aggregated_filtered_df_h1):
-    # Manually define the support and resistance levels (index or datetime and price level)
-    # Format: [(index_or_datetime, price_level)]
-    hardcoded_sr_levels = [('2024-09-23 03:01:00', 5782.0), ('2024-09-23 10:01:00', 5776.0)]  # Example support levels
+def levels_discovery(aggregated_filtered_df_h1, hardcoded_sr_levels):
 
     hardcoded_sr_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_sr_levels]
 
@@ -29,8 +26,8 @@ def levels_discovery(aggregated_filtered_df_h1):
     return (
         levels_startpoints_tuples,
         levels_endpoints_tuples,
-        pd.Series(level_discovery_signal),  # No discovery signals, just fill with None
-        sr_levels  # The SR levels list with manually added levels
+        pd.Series(level_discovery_signal),
+        sr_levels
     )
 
 
@@ -98,14 +95,14 @@ def fill_column_with_first_non_null_value(df, column_idx):
                 df.loc[idx, column_idx] = value_to_fill
 
 
-def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1):
+def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1, hardcoded_sr_levels):
     # Step 1: Discover levels
     (
         levels_startpoints_to_chart,
         levels_endpoints_to_chart,
         level_discovery_signals_series_out,
         sr_levels_out
-    ) = (levels_discovery(aggregated_filtered_df_h1))
+    ) = (levels_discovery(aggregated_filtered_df_h1, hardcoded_sr_levels))
 
     print('SR_levels_out: \n', sr_levels_out)
     print('levels_startpoints: \n', levels_startpoints_to_chart)
