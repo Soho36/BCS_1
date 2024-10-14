@@ -6,7 +6,6 @@ def trades_simulation(
         start_simulation,
         longs_allowed,
         shorts_allowed,
-        new_trades_threshold,
         use_level_price_as_entry,
         use_candle_close_as_entry,
         stop_loss_as_candle_min_max,
@@ -39,13 +38,6 @@ def trades_simulation(
 
             # LONG TRADES LOGIC
             if signal_value == 100 and longs_allowed:
-                # Check the previous 5 signals to avoid open new trades too close to each other
-                previous_signals = signal_series[max(0, signal_index - new_trades_threshold):signal_index]
-
-                if any(prev_signal in (100, -100) for prev_signal, _ in previous_signals):
-                    # If there is any signal with value 100 or -100 in the previous 5 signals, skip this signal
-                    print(f"Skipping signal at index {signal_index} due to new trades threshold")
-                    continue
 
                 trades_counter += 1
                 trade_direction.append('Long')
@@ -150,13 +142,6 @@ def trades_simulation(
 
             # SHORT TRADES LOGIC
             elif signal_value == -100 and shorts_allowed:
-                # Check the previous 5 signals to avoid open new trades too close to each other
-                previous_signals = signal_series[max(0, signal_index - new_trades_threshold):signal_index]
-
-                if any(prev_signal in (100, -100) for prev_signal, _ in previous_signals):
-                    # If there is any signal with value 100 or -100 in the previous 5 signals, skip this signal
-                    print(f"Skipping signal at index {signal_index} due to new trades threshold")
-                    continue
 
                 trades_counter += 1
                 trade_direction.append('Short')

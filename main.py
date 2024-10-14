@@ -50,7 +50,7 @@ hardcoded_sr_levels = [
 start_simulation = True
 
 # ENTRY CONDITIONS
-over_under_threshold = 1
+over_under_threshold = 2
 new_trades_threshold = 0  # Reject new trades placement within this period (min)
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
@@ -151,7 +151,6 @@ filtered_by_date_dataframe_original = filtered_by_date_dataframe_m1.copy()  # Pa
     start_simulation,
     longs_allowed,
     shorts_allowed,
-    new_trades_threshold,
     use_level_price_as_entry,
     use_candle_close_as_entry,
     stop_loss_as_candle_min_max,
