@@ -9,7 +9,8 @@ manual level entry as option to find out will it be more precise -> better outco
 """
 # from signals import level_rejection_signals
 # from signals_with_OB import level_rejection_signals
-from signals_with_OB_GPT import level_rejection_signals
+# from signals_with_OB_GPT import level_rejection_signals
+from signals_with_ob_short_long import level_rejection_signals
 
 
 from simulation import trades_simulation
