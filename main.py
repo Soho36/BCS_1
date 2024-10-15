@@ -32,18 +32,19 @@ file_path = 'Bars/MESZ24_M1_0801_w.csv'
 
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-23'  # Choose the start date to begin from
-end_date = '2024-09-23'  # Choose the end date
+start_date = '2024-09-24'  # Choose the start date to begin from
+end_date = '2024-09-24'  # Choose the end date
 
 # Manually define the support and resistance levels
 # Format: [(index_or_datetime, price_level)]
+
 hardcoded_sr_levels = [
-    ('2024-09-23 03:01:00', 5781.84),
-    ('2024-09-23 11:01:00', 5764.00),
+    ('2024-09-24 10:15:00', 5773.40),
 ]  # Example support levels
 
 # hardcoded_sr_levels = [
-#     ('2024-09-23 02:01:00', 5765.00)
+#     ('2024-09-23 10:01:00', 5765.00),
+#     ('2024-09-23 10:01:00', 5780.00),
 # ]  # Example support levels
 
 # SIMULATION
@@ -51,7 +52,6 @@ start_simulation = True
 
 # ENTRY CONDITIONS
 over_under_threshold = 2
-new_trades_threshold = 0  # Reject new trades placement within this period (min)
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
 confirmation_close = False  # Candle close above/below level as confirmation
