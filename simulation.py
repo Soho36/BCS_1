@@ -17,7 +17,8 @@ def trades_simulation(
         spread,
         risk_reward_simulation,
         sl_offset_multiplier,
-        rejection_signals_series_with_prices
+        rejection_signals_series_with_prices,
+        yellow_star_signals_series_with_prices,     # Pass signals with prices for OB candle SL implementation
 ):
 
     #   Convert Date column to Datetime object
@@ -34,6 +35,14 @@ def trades_simulation(
 
         signal_series = rejection_signals_series_with_prices
         print('signal_series', signal_series)
+        yellow_star_signals_series_with_prices = yellow_star_signals_series_with_prices
+
+        # print('signal_yellow_star_series', yellow_star_signals_series_with_prices)
+
+        """
+        Now we need somehow get entry price from signal series, but stop loss price from 
+        yellow_star_signals_series_with_prices???
+        """
         for (signal_index, signal_value, price_level) in signal_series:
 
             # LONG TRADES LOGIC

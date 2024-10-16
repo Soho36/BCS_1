@@ -32,14 +32,14 @@ file_path = 'Bars/MESZ24_M1_0801_w.csv'
 
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-24'  # Choose the start date to begin from
-end_date = '2024-09-24'  # Choose the end date
+start_date = '2024-09-19'  # Choose the start date to begin from
+end_date = '2024-09-19'  # Choose the end date
 
 # Manually define the support and resistance levels
 # Format: [(index_or_datetime, price_level)]
 
 hardcoded_sr_levels = [
-    ('2024-09-24 10:15:00', 5773.40),
+    ('2024-09-19 11:54:00', 5778.75),
 ]  # Example support levels
 
 # hardcoded_sr_levels = [
@@ -51,7 +51,7 @@ hardcoded_sr_levels = [
 start_simulation = True
 
 # ENTRY CONDITIONS
-over_under_threshold = 2
+over_under_threshold = 3
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
 confirmation_close = False  # Candle close above/below level as confirmation
@@ -61,7 +61,7 @@ shorts_allowed = True  # Allow or disallow trade direction
 # RISK MANAGEMENT
 
 spread = 0
-risk_reward_ratio = 1  # Chose risk/reward ratio (aiming to win compared to lose)
+risk_reward_ratio = 2  # Chose risk/reward ratio (aiming to win compared to lose)
 stop_loss_as_candle_min_max = True
 stop_loss_offset = 0.1  # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 # HAS TO BE >0 TO AVOID BOTH TRADES
@@ -121,6 +121,7 @@ print('44. levels_points_for_chart: \n', levels_points_for_chart)
 
 (
     rejection_signals_series_outside,
+    yellow_star_signals_series_with_prices,
     rejection_signals_series_for_chart_outside,
     ob_candle_series_for_chart,
     under_over_series_for_chart,
@@ -162,7 +163,8 @@ filtered_by_date_dataframe_original = filtered_by_date_dataframe_m1.copy()  # Pa
     spread,
     risk_reward_ratio,
     stop_loss_offset_multiplier,
-    rejection_signals_series_outside
+    rejection_signals_series_outside,
+    yellow_star_signals_series_with_prices,
 )
 # =====================================================================================================================
 #   ANALYSIS FUNCTION CALL
