@@ -32,14 +32,14 @@ file_path = 'Bars/MESZ24_M1_0801_w.csv'
 
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-19'  # Choose the start date to begin from
-end_date = '2024-09-19'  # Choose the end date
+start_date = '2024-09-23'  # Choose the start date to begin from
+end_date = '2024-09-23'  # Choose the end date
 
 # Manually define the support and resistance levels
 # Format: [(index_or_datetime, price_level)]
 
 hardcoded_sr_levels = [
-    ('2024-09-19 11:54:00', 5778.75),
+    ('2024-09-23 04:18:00', 5778.7),
 ]  # Example support levels
 
 # hardcoded_sr_levels = [
@@ -61,7 +61,7 @@ shorts_allowed = True  # Allow or disallow trade direction
 # RISK MANAGEMENT
 
 spread = 0
-risk_reward_ratio = 2  # Chose risk/reward ratio (aiming to win compared to lose)
+risk_reward_ratio = 1  # Chose risk/reward ratio (aiming to win compared to lose)
 stop_loss_as_candle_min_max = True
 stop_loss_offset = 0.1  # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 # HAS TO BE >0 TO AVOID BOTH TRADES
@@ -164,7 +164,7 @@ filtered_by_date_dataframe_original = filtered_by_date_dataframe_m1.copy()  # Pa
     risk_reward_ratio,
     stop_loss_offset_multiplier,
     rejection_signals_series_outside,
-    yellow_star_signals_series_with_prices,
+    # yellow_star_signals_series_with_prices,   # Supposed to be for SL at OB candle... Not in use so far
 )
 # =====================================================================================================================
 #   ANALYSIS FUNCTION CALL

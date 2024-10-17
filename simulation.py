@@ -18,7 +18,7 @@ def trades_simulation(
         risk_reward_simulation,
         sl_offset_multiplier,
         rejection_signals_series_with_prices,
-        yellow_star_signals_series_with_prices,     # Pass signals with prices for OB candle SL implementation
+        # yellow_star_signals_series_with_prices,     # Supposed to be for SL at OB candle... Not in use so far
 ):
 
     #   Convert Date column to Datetime object
@@ -35,7 +35,7 @@ def trades_simulation(
 
         signal_series = rejection_signals_series_with_prices
         print('signal_series', signal_series)
-        yellow_star_signals_series_with_prices = yellow_star_signals_series_with_prices
+        # yellow_star_signals_series_with_prices = yellow_star_signals_series_with_prices
 
         # print('signal_yellow_star_series', yellow_star_signals_series_with_prices)
 
