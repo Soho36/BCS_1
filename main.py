@@ -32,14 +32,14 @@ file_path = 'Bars/MESZ24_M1_0801_w.csv'
 
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-23'  # Choose the start date to begin from
-end_date = '2024-09-23'  # Choose the end date
+start_date = '2024-09-16'  # Choose the start date to begin from
+end_date = '2024-09-16'  # Choose the end date
 
 # Manually define the support and resistance levels
 # Format: [(index_or_datetime, price_level)]
 
 hardcoded_sr_levels = [
-    ('2024-09-23 00:10:00', 5771.00),
+    ('2024-09-16 08:26:00', 5698.00),
 ]  # Example support levels
 
 # hardcoded_sr_levels = [
