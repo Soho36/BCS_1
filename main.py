@@ -39,7 +39,7 @@ end_date = '2024-09-23'  # Choose the end date
 # Format: [(index_or_datetime, price_level)]
 
 hardcoded_sr_levels = [
-    ('2024-09-23 04:18:00', 5778.7),
+    ('2024-09-23 06:33:00', 5767.00),
 ]  # Example support levels
 
 # hardcoded_sr_levels = [
@@ -51,7 +51,7 @@ hardcoded_sr_levels = [
 start_simulation = True
 
 # ENTRY CONDITIONS
-over_under_threshold = 3
+over_under_threshold = 2
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
 confirmation_close = False  # Candle close above/below level as confirmation
