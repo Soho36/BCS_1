@@ -51,7 +51,8 @@ hardcoded_sr_levels = [
 start_simulation = True
 
 # ENTRY CONDITIONS
-over_under_threshold = 2
+over_under_threshold = 1
+max_time_waiting_for_entry = 30
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
 confirmation_close = False  # Candle close above/below level as confirmation
@@ -129,7 +130,8 @@ print('44. levels_points_for_chart: \n', levels_points_for_chart)
 ) = level_rejection_signals(
     output_df_with_levels,
     sr_levels_out,
-    over_under_threshold
+    over_under_threshold,
+    max_time_waiting_for_entry
 )
 
 print('Rejection_signals_series: \n', rejection_signals_series_outside)     # THIS SERIES GOES TO SIMULATION

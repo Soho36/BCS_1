@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_threshold):
+def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_threshold, max_time_waiting_for_entry):
     rejection_signals_with_prices = []
     yellow_star_signals_with_prices = []
     rejection_signals_for_chart = []
@@ -365,7 +365,7 @@ def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_thr
                                             f"Waiting for next candle to close above RED candle high at {next_index},"
                                             f"Time: {signal_time}"
                                         )
-                                        if time_diff > 20:
+                                        if time_diff > max_time_waiting_for_entry:
                                             print(
                                                 f"Stopping search: "
                                                 f"Exceeded 10-minute window after RED candle at index {next_index}, \n"
@@ -405,7 +405,7 @@ def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_thr
                                             time_diff = (next_candle_after_ob_time -
                                                          pd.to_datetime(
                                                              level_interaction_signal_time)).total_seconds() / 60
-                                            if time_diff > 20:
+                                            if time_diff > max_time_waiting_for_entry:
                                                 print(
                                                     f"Stopping search: "
                                                     f"Exceeded 10-minute window after RED candle at index {next_index}, \n"
