@@ -52,7 +52,7 @@ start_simulation = True
 
 # ENTRY CONDITIONS
 over_under_threshold = 1
-max_time_waiting_for_entry = 30
+max_time_waiting_for_entry = 40
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
 confirmation_close = False  # Candle close above/below level as confirmation
@@ -75,7 +75,7 @@ stop_loss_offset_multiplier = 0  # 1 places stop one candle away from H/L (only 
 
 # CHARTS
 show_candlestick_chart_m1 = True
-show_candlestick_chart_H1 = True
+show_candlestick_chart_H1 = False
 show_level_rejection_signals = True
 find_levels = True
 show_profits_losses_line_chart = False  # Only when Simulation is True

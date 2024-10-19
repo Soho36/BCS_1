@@ -358,9 +358,6 @@ def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_thr
                                         time_diff = (potential_ob_time -
                                                      pd.to_datetime(level_interaction_signal_time)).total_seconds() / 60
 
-                                        print('level_interaction_signal_time!!!!!!!!!', level_interaction_signal_time)
-                                        print('potential_ob_time!!!!!!!!!', potential_ob_time)
-                                        print('time_diff!!!!!!!!!', time_diff)
                                         print(
                                             f"Waiting for next candle to close above RED candle high at {next_index},"
                                             f"Time: {signal_time}"
@@ -368,7 +365,7 @@ def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_thr
                                         if time_diff > max_time_waiting_for_entry:
                                             print(
                                                 f"Stopping search: "
-                                                f"Exceeded 10-minute window after RED candle at index {next_index}, \n"
+                                                f"1Exceeded {max_time_waiting_for_entry}-minute window after RED candle at index {next_index}, \n"
                                                 f"Signal_time: {level_interaction_signal_time}\n"
                                                 f"Red_candle_time: {potential_ob_time}\n"
                                                 f"time_diff: {time_diff}"
@@ -408,7 +405,7 @@ def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_thr
                                             if time_diff > max_time_waiting_for_entry:
                                                 print(
                                                     f"Stopping search: "
-                                                    f"Exceeded 10-minute window after RED candle at index {next_index}, \n"
+                                                    f"2Exceeded {max_time_waiting_for_entry}-minute window after RED candle at index {next_index}, \n"
                                                     f"Signal_time: {level_interaction_signal_time}\n"
                                                     f"Red_candle_time: {next_candle_after_ob_time}\n"
                                                     f"time_diff: {time_diff}"
