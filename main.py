@@ -32,27 +32,28 @@ file_path = 'Bars/MESZ24_M1_0801_w.csv'
 
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-17'  # Choose the start date to begin from
-end_date = '2024-09-17'  # Choose the end date
+start_date = '2024-09-18'  # Choose the start date to begin from
+end_date = '2024-09-18'  # Choose the end date
 
 # Manually define the support and resistance levels
 # Format: [(index_or_datetime, price_level)]
 
 hardcoded_sr_levels = [
-    ('2024-09-17 14:40:00', 5732.67),
+    ('2024-09-18 08:30:00', 5698.40),
+    ('2024-09-18 06:30:00', 5711.00),
+    ('2024-09-18 12:30:00', 5699.30),
+    ('2024-09-18 16:30:00', 5682.50),
+    ('2024-09-18 17:30:00', 5711.90),
+    # ('2024-09-17 16:30:00', 5679.70),
+    # ('2024-09-17 17:33:00', 5700.47)
 ]  # Example support levels
-
-# hardcoded_sr_levels = [
-#     ('2024-09-23 10:01:00', 5765.00),
-#     ('2024-09-23 10:01:00', 5780.00),
-# ]  # Example support levels
 
 # SIMULATION
 start_simulation = True
 
 # ENTRY CONDITIONS
-over_under_threshold = 1
-max_time_waiting_for_entry = 5
+level_interactions_threshold = 1
+max_time_waiting_for_entry = 20
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
 confirmation_close = False  # Candle close above/below level as confirmation
@@ -75,7 +76,7 @@ stop_loss_offset_multiplier = 0  # 1 places stop one candle away from H/L (only 
 
 # CHARTS
 show_candlestick_chart_m1 = True
-show_candlestick_chart_H1 = False
+show_candlestick_chart_H1 = True
 show_level_rejection_signals = True
 find_levels = True
 show_profits_losses_line_chart = False  # Only when Simulation is True
@@ -130,7 +131,7 @@ print('44. levels_points_for_chart: \n', levels_points_for_chart)
 ) = level_rejection_signals(
     output_df_with_levels,
     sr_levels_out,
-    over_under_threshold,
+    level_interactions_threshold,
     max_time_waiting_for_entry
 )
 

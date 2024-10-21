@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_threshold, max_time_waiting_for_entry):
+def level_rejection_signals(output_df_with_levels, sr_levels_out, level_interactions_threshold, max_time_waiting_for_entry):
     rejection_signals_with_prices = []
     yellow_star_signals_with_prices = []
     rejection_signals_for_chart = []
@@ -40,7 +40,7 @@ def level_rejection_signals(output_df_with_levels, sr_levels_out, over_under_thr
 
             if current_sr_level is not None:
                 # Check if signal count for this level has reached the threshold
-                if level_signal_count[level_column] < over_under_threshold:
+                if level_signal_count[level_column] < level_interactions_threshold:
 
                     # **************************************************************************************************
                     # SHORTS LOGICS BEGIN HERE
