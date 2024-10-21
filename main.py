@@ -39,7 +39,7 @@ end_date = '2024-09-17'  # Choose the end date
 # Format: [(index_or_datetime, price_level)]
 
 hardcoded_sr_levels = [
-    ('2024-09-17 15:59:00', 5719.69),
+    ('2024-09-17 14:40:00', 5732.67),
 ]  # Example support levels
 
 # hardcoded_sr_levels = [
