@@ -1,6 +1,4 @@
 from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
-# from price_levels import process_levels
-# from pivots import process_levels
 from price_levels_manual import process_levels
 """
 sig3 works interesting on hourly. draw too much levels (need to exclude premarket)
@@ -111,8 +109,7 @@ aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataf
     hardcoded_sr_levels
 )
 
-# print('55. support_level_signal_running_out', support_level_signal_running_out)
-# print('66. resistance_level_signal_running_out', resistance_level_signal_running_out)
+print('output_df_with_levels: \n', output_df_with_levels)
 print('77.sr_levels_out', sr_levels_out)
 
 

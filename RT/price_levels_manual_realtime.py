@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def levels_discovery(aggregated_filtered_df_h1, hardcoded_sr_levels):
+def levels_discovery(dataframe_from_log, hardcoded_sr_levels):
 
     hardcoded_sr_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_sr_levels]
 
@@ -12,7 +12,7 @@ def levels_discovery(aggregated_filtered_df_h1, hardcoded_sr_levels):
 
     # Support levels
     for datetime_1, price_level_1 in hardcoded_sr_levels:
-        datetime_2 = aggregated_filtered_df_h1.index[-1]  # Use the last datetime for endpoint
+        datetime_2 = dataframe_from_log.index[-1]  # Use the last datetime for endpoint
         levels_startpoints_tuples.append((datetime_1, price_level_1))
         levels_endpoints_tuples.append((datetime_2, price_level_1))
         # support_levels.append(price_level_1)
@@ -20,7 +20,7 @@ def levels_discovery(aggregated_filtered_df_h1, hardcoded_sr_levels):
         sr_levels_with_datetime.append((datetime_1, price_level_1))
 
     # Fill signals list with None as we are not generating discovery signals
-    level_discovery_signal = [None] * len(aggregated_filtered_df_h1)
+    level_discovery_signal = [None] * len(dataframe_from_log)
 
     return (
         levels_startpoints_tuples,
@@ -95,28 +95,28 @@ def fill_column_with_first_non_null_value(df, column_idx):
                 df.loc[idx, column_idx] = value_to_fill
 
 
-def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1, hardcoded_sr_levels):
+def process_levels(dataframe_from_log, hardcoded_sr_levels):
     # Step 1: Discover levels
     (
         levels_startpoints_to_chart,
         levels_endpoints_to_chart,
         level_discovery_signals_series_out,
         sr_levels_out
-    ) = (levels_discovery(aggregated_filtered_df_h1, hardcoded_sr_levels))
+    ) = (levels_discovery(dataframe_from_log, hardcoded_sr_levels))
 
     print('SR_levels_out: \n', sr_levels_out)
     print('levels_startpoints: \n', levels_startpoints_to_chart)
 
     # Step 2: Add columns and levels to dataframe
-    filtered_by_date_dataframe = filtered_by_date_dataframe.copy()
-    column_counters = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe, levels_startpoints_to_chart)
+    dataframe_from_log = dataframe_from_log.copy()
+    column_counters = add_columns_and_levels_to_dataframe(dataframe_from_log, levels_startpoints_to_chart)
     print('column_counters_outside: ', column_counters)
 
     # Step 3: Fill columns with the first non-null value
     for column_index in range(1, len(column_counters) + 1):
-        fill_column_with_first_non_null_value(filtered_by_date_dataframe, column_index)
-        print('7. Dataframe with level columns: \n', filtered_by_date_dataframe)    # .iloc[0:50]
-    output_df_with_levels = filtered_by_date_dataframe.copy()
+        fill_column_with_first_non_null_value(dataframe_from_log, column_index)
+        print('7. Dataframe with level columns: \n', dataframe_from_log)    # .iloc[0:50]
+    output_df_with_levels = dataframe_from_log.copy()
 
     return (levels_startpoints_to_chart,
             levels_endpoints_to_chart,
