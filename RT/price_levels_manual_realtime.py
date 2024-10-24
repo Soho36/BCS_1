@@ -20,19 +20,19 @@ def levels_discovery(dataframe_from_log, hardcoded_sr_levels):
         sr_levels_with_datetime.append((datetime_1, price_level_1))
 
     # Fill signals list with None as we are not generating discovery signals
-    level_discovery_signal = [None] * len(dataframe_from_log)
+    level_discovery_signal_series = pd.Series([None] * len(dataframe_from_log))
 
     return (
         levels_startpoints_tuples,
         levels_endpoints_tuples,
-        pd.Series(level_discovery_signal),
+        level_discovery_signal_series,
         sr_levels
     )
 
 
 def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
-    print(df.columns)
-    print('5. add_columns_and_levels_: \n', df)
+    # print(df.columns)
+    # print('5. add_columns_and_levels_: \n', df)
     """
     Add columns with levels to dataframe for charting
     Count how many columns are needed to add levels values to dataframe.
@@ -60,8 +60,8 @@ def add_columns_and_levels_to_dataframe(df, levels_startpoints_to_chart):
 
 
 def fill_column_with_first_non_null_value(df, column_idx):
-    print(df.columns)
-    print('6. fill_column_with_first_non_null_value: \n', df)   # .iloc[0:50]
+    # print(df.columns)
+    # print('6. fill_column_with_first_non_null_value: \n', df)   # .iloc[0:50]
 
     """
     Fill the columns down till the end with level price after first not null value discovered
@@ -110,12 +110,12 @@ def process_levels(dataframe_from_log, hardcoded_sr_levels):
     # Step 2: Add columns and levels to dataframe
     dataframe_from_log = dataframe_from_log.copy()
     column_counters = add_columns_and_levels_to_dataframe(dataframe_from_log, levels_startpoints_to_chart)
-    print('column_counters_outside: ', column_counters)
+    # print('column_counters_outside: ', column_counters)
 
     # Step 3: Fill columns with the first non-null value
     for column_index in range(1, len(column_counters) + 1):
         fill_column_with_first_non_null_value(dataframe_from_log, column_index)
-        print('7. Dataframe with level columns: \n', dataframe_from_log)    # .iloc[0:50]
+        # print('7. Dataframe with level columns: \n', dataframe_from_log)    # .iloc[0:50]
     output_df_with_levels = dataframe_from_log.copy()
 
     return (levels_startpoints_to_chart,

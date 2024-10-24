@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def level_rejection_signals(
-        dataframe_from_log,
+        output_df_with_levels,
         sr_levels,
         level_interactions_threshold,
         max_time_waiting_for_entry
@@ -20,8 +20,9 @@ def level_rejection_signals(
     # Create a dictionary to track signal count per level
     level_signal_count = {i: 0 for i in range(1, len(sr_levels) + 1)}
 
-    dataframe_from_log.reset_index(inplace=True)
+    output_df_with_levels.reset_index(inplace=True)
     level_column = None
+    # print('dataframe_from_log!!!!', output_df_with_levels)
 
     def check_time_limit(
             m_time_waiting_for_entry,
@@ -67,8 +68,9 @@ def level_rejection_signals(
             "++++++++++++++++++++++++++"
         )
 
-    for index, row in dataframe_from_log.iterrows():
-        previous_close = dataframe_from_log.iloc[index - 1]['Close'] if index > 0 else None
+    sr_level_columns = output_df_with_levels.columns[8:]  # Assuming SR level columns start from the 8th column onwards
+    for index, row in output_df_with_levels.iterrows():
+        previous_close = output_df_with_levels.iloc[index - 1]['Close'] if index > 0 else None
         current_candle_close = row['Close']
         current_candle_high = row['High']
         current_candle_low = row['Low']
@@ -86,9 +88,10 @@ def level_rejection_signals(
         subsequent_index = None  # Initialize subsequent_index
         level_interaction_signal = None
         stop_price = None
-
         # Loop through each level column
-        for level_column in range(1, len(sr_levels) + 1):
+        # print(sr_level_columns)
+        for level_column in sr_level_columns:
+            # print('we are here')
             current_sr_level = row[level_column]
 
             if current_sr_level is not None:
@@ -99,6 +102,9 @@ def level_rejection_signals(
                     # SHORTS LOGICS BEGIN HERE
                     # **************************************************************************************************
                     # REJECTION SHORTS LOGIC:
+                    # print(f"Type of previous_close: {type(previous_close)}, Value: {previous_close}")
+                    # print(f"Type of current_sr_level: {type(current_sr_level)}, Value: {current_sr_level}")
+
                     if previous_close is not None and previous_close < current_sr_level:
                         if current_candle_high > current_sr_level:
                             if current_candle_close < current_sr_level:
@@ -118,9 +124,9 @@ def level_rejection_signals(
                                 trade_type = 'rejection'
                                 side = 'short'
 
-                                for subsequent_index in range(index + 1, len(dataframe_from_log)):
+                                for subsequent_index in range(index + 1, len(output_df_with_levels)):
 
-                                    potential_ob_candle = dataframe_from_log.iloc[subsequent_index]
+                                    potential_ob_candle = output_df_with_levels.iloc[subsequent_index]
                                     # Convert to datetime for time calculations
                                     potential_ob_time = pd.to_datetime(potential_ob_candle['Time'])
 
@@ -171,8 +177,8 @@ def level_rejection_signals(
                                 if green_candle_found:
                                     # Store the time of the green candle
                                     potential_ob_time = pd.to_datetime(potential_ob_time)
-                                    for next_index in range(subsequent_index + 1, len(dataframe_from_log)):
-                                        next_candle_after_ob = dataframe_from_log.iloc[next_index]
+                                    for next_index in range(subsequent_index + 1, len(output_df_with_levels)):
+                                        next_candle_after_ob = output_df_with_levels.iloc[next_index]
                                         signal_time = next_candle_after_ob['Time']
                                         # Calculate the time difference in minutes
                                         # between the green candle and the current candle
@@ -196,7 +202,7 @@ def level_rejection_signals(
                                         ):
                                             break  # Exit the loop if time limit is exceeded
 
-                                        # Price hits the low of the green candle
+                                        # THIS IS THE ACTUAL SIGNAL FOR TRADE OPEN
                                         if next_candle_after_ob['Close'] < green_candle_low:
                                             # Store the time of the next candle after OB
                                             next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
@@ -285,9 +291,9 @@ def level_rejection_signals(
                             trade_type = 'BR-D'
                             side = 'short'
 
-                            for subsequent_index in range(index + 1, len(dataframe_from_log)):
+                            for subsequent_index in range(index + 1, len(output_df_with_levels)):
 
-                                potential_ob_candle = dataframe_from_log.iloc[subsequent_index]
+                                potential_ob_candle = output_df_with_levels.iloc[subsequent_index]
                                 # Convert to datetime for time calculations
                                 potential_ob_time = pd.to_datetime(potential_ob_candle['Time'])
 
@@ -340,8 +346,8 @@ def level_rejection_signals(
                             if green_candle_found:
                                 # Store the time of the green candle
                                 potential_ob_time = pd.to_datetime(potential_ob_time)
-                                for next_index in range(subsequent_index + 1, len(dataframe_from_log)):
-                                    next_candle_after_ob = dataframe_from_log.iloc[next_index]
+                                for next_index in range(subsequent_index + 1, len(output_df_with_levels)):
+                                    next_candle_after_ob = output_df_with_levels.iloc[next_index]
                                     signal_time = next_candle_after_ob['Time']
                                     # Calculate the time difference in minutes
                                     # between the green candle and the current candle
@@ -365,6 +371,7 @@ def level_rejection_signals(
                                     ):
                                         break  # Exit the loop if time limit is exceeded
 
+                                    # THIS IS THE ACTUAL SIGNAL FOR LONG TRADE OPEN
                                     # Price hits the low of the green candle
                                     if next_candle_after_ob['Close'] < green_candle_low:
                                         # Store the time of the next candle after OB
@@ -453,9 +460,9 @@ def level_rejection_signals(
                                 trade_type = 'rejection'
                                 side = 'long'
 
-                                for subsequent_index in range(index + 1, len(dataframe_from_log)):
+                                for subsequent_index in range(index + 1, len(output_df_with_levels)):
 
-                                    potential_ob_candle = dataframe_from_log.iloc[subsequent_index]
+                                    potential_ob_candle = output_df_with_levels.iloc[subsequent_index]
                                     # Convert to datetime for time calculations
                                     potential_ob_time = pd.to_datetime(potential_ob_candle['Time'])
 
@@ -504,8 +511,8 @@ def level_rejection_signals(
                                 if red_candle_found:
                                     # Store the time of the green candle
                                     potential_ob_time = pd.to_datetime(potential_ob_time)
-                                    for next_index in range(subsequent_index + 1, len(dataframe_from_log)):
-                                        next_candle_after_ob = dataframe_from_log.iloc[next_index]
+                                    for next_index in range(subsequent_index + 1, len(output_df_with_levels)):
+                                        next_candle_after_ob = output_df_with_levels.iloc[next_index]
                                         signal_time = next_candle_after_ob['Time']
                                         # Calculate the time difference in minutes
                                         # between the green candle and the current candle
@@ -618,9 +625,9 @@ def level_rejection_signals(
                                 trade_type = 'BR-O'
                                 side = 'Long'
 
-                                for subsequent_index in range(index + 1, len(dataframe_from_log)):
+                                for subsequent_index in range(index + 1, len(output_df_with_levels)):
 
-                                    potential_ob_candle = dataframe_from_log.iloc[subsequent_index]
+                                    potential_ob_candle = output_df_with_levels.iloc[subsequent_index]
 
                                     # Convert to datetime for time calculations
                                     potential_ob_time = pd.to_datetime(potential_ob_candle['Time'])
@@ -671,8 +678,8 @@ def level_rejection_signals(
                                 if red_candle_found:
                                     # Store the time of the red candle
                                     potential_ob_time = pd.to_datetime(potential_ob_time)
-                                    for next_index in range(subsequent_index + 1, len(dataframe_from_log)):
-                                        next_candle_after_ob = dataframe_from_log.iloc[next_index]
+                                    for next_index in range(subsequent_index + 1, len(output_df_with_levels)):
+                                        next_candle_after_ob = output_df_with_levels.iloc[next_index]
                                         signal_time = next_candle_after_ob['Time']
                                         # Calculate the time difference in minutes
                                         # between the red candle and the current candle
