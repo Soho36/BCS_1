@@ -14,7 +14,7 @@ stop_loss_offset = 10               # Is added to SL for Shorts and subtracted f
 # ]  # Example support levels
 
 hardcoded_sr_levels = [
-    ('2024-10-24 19:29:00', 20407.00),
+    ('2024-10-24 20:24:00', 20397.73),
 ]  # Example support levels
 
 level_interactions_threshold = 1
@@ -25,7 +25,7 @@ log_file_reading_interval = 1       # File reading interval (sec)
 
 # GET DATAFRAME FROM LOG
 dataframe_from_log = get_dataframe_from_file()
-print('get_dataframe_from_file: \n', dataframe_from_log)
+print('\nget_dataframe_from_file: \n', dataframe_from_log)
 
 # LAST CANDLE OHLC (current OHLC)
 # (
@@ -49,7 +49,7 @@ print('get_dataframe_from_file: \n', dataframe_from_log)
     dataframe_from_log,
     hardcoded_sr_levels
 )
-print('output_df_with_levels2: \n', output_df_with_levels)
+print('\noutput_df_with_levels2: \n', output_df_with_levels)
 
 # SIGNALS
 

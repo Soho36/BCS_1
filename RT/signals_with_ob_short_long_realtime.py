@@ -102,8 +102,6 @@ def level_rejection_signals(
                     # SHORTS LOGICS BEGIN HERE
                     # **************************************************************************************************
                     # REJECTION SHORTS LOGIC:
-                    # print(f"Type of previous_close: {type(previous_close)}, Value: {previous_close}")
-                    # print(f"Type of current_sr_level: {type(current_sr_level)}, Value: {current_sr_level}")
 
                     if previous_close is not None and previous_close < current_sr_level:
                         if current_candle_high > current_sr_level:

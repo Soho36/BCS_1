@@ -32,8 +32,6 @@ def get_dataframe_from_file():
     log_df.columns = new_column_names
     log_df['Datetime'] = pd.to_datetime(log_df['Date'] + ' ' + log_df['Time'], format='ISO8601')
     log_df.set_index('Datetime', inplace=True)
-    log_df['Date'] = log_df.index.date
-    log_df['Time'] = log_df.index.time
     dataframe_from_log = log_df.loc[:, ['Ticker', 'Date', 'Time', 'Open', 'High', 'Low', 'Close']]
 
     return dataframe_from_log
