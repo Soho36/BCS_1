@@ -770,19 +770,21 @@ def level_rejection_signals(
                                 break  # Exit the level loop once a signal is generated
 
         # Append values with None for signals not triggered
+        level_interaction_signal_for_chart.append((index, level_interaction_signal))
         rejection_signals_with_prices.append((signal_index, signal, price_level))
         yellow_star_signals_with_prices.append((subsequent_index, ob_signal, stop_price))
         rejection_signals_for_chart.append((signal_index, signal))
         ob_candle_for_chart.append((subsequent_index, ob_signal))
-        level_interaction_signal_for_chart.append((index, level_interaction_signal))
+
     else:
         print(f"Max signals for level {level_column} reached")
 
+    level_interaction_signals_series_for_chart = pd.Series(level_interaction_signal_for_chart)
     rejection_signals_series_with_prices = pd.Series(rejection_signals_with_prices)
     yellow_star_signals_series_with_prices = pd.Series(yellow_star_signals_with_prices)
     rejection_signals_series_for_chart = pd.Series(rejection_signals_for_chart)
     ob_candle_series_for_chart = pd.Series(ob_candle_for_chart)
-    level_interaction_signals_series_for_chart = pd.Series(level_interaction_signal_for_chart)
+
     return (rejection_signals_series_with_prices,
             yellow_star_signals_series_with_prices,
             rejection_signals_series_for_chart,

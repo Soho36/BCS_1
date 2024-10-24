@@ -1,6 +1,7 @@
 from RT.data_handling_realtime import get_dataframe_from_file
 from price_levels_manual_realtime import process_levels
 from signals_with_ob_short_long_realtime import level_rejection_signals
+from orders_sender import last_candle_ohlc, send_buy_sell_orders
 import time
 
 # ************************************** ORDER PARAMETERS *******************************************************
@@ -27,16 +28,6 @@ log_file_reading_interval = 1       # File reading interval (sec)
 dataframe_from_log = get_dataframe_from_file()
 print('\nget_dataframe_from_file: \n', dataframe_from_log)
 
-# LAST CANDLE OHLC (current OHLC)
-# (
-#     last_candle_open,
-#     last_candle_high,
-#     last_candle_low,
-#     last_candle_close,
-#     ticker
-#  ) = last_candle_ohlc(
-#     dataframe_from_log
-# )
 
 # PRICE LEVELS
 (
@@ -54,9 +45,9 @@ print('\noutput_df_with_levels2: \n', output_df_with_levels)
 # SIGNALS
 
 (
-    rejection_signals_series_outside,
+    rejection_signals_series_with_prices,   # Actual signals for placing a trade
     yellow_star_signals_series_with_prices,
-    rejection_signals_series_for_chart_outside,
+    rejection_signals_series_for_chart,
     ob_candle_series_for_chart,
     under_over_series_for_chart,
     over_under_counter
@@ -66,16 +57,33 @@ print('\noutput_df_with_levels2: \n', output_df_with_levels)
     level_interactions_threshold,
     max_time_waiting_for_entry
 )
-
+print('\nrejection_signals_series_with_prices: \n', rejection_signals_series_with_prices)
+# LAST CANDLE OHLC (current OHLC)
+(
+    last_candle_high,
+    last_candle_low,
+    last_candle_close,
+    ticker
+ ) = last_candle_ohlc(
+    output_df_with_levels
+)
 
 # SEND ORDERS
-# (buy_signal_discovered,
-#  sell_signal_discovered) = send_buy_sell_orders(buy_signal,
-#                                                 sell_signal,
-#                                                 last_candle_open,
-#                                                 last_candle_high,
-#                                                 last_candle_low,
-#                                                 last_candle_close,
-#                                                 ticker)
-#
-# time.sleep(log_file_reading_interval)   # Pause between reading
+buy_signal = None
+sell_signal = None
+(
+    buy_signal_discovered,
+    sell_signal_discovered,
+) = send_buy_sell_orders(
+    rejection_signals_series_with_prices,
+    buy_signal,
+    sell_signal,
+    last_candle_high,
+    last_candle_low,
+    last_candle_close,
+    ticker,
+    stop_loss_offset,
+    risk_reward,
+)
+
+time.sleep(log_file_reading_interval)   # Pause between reading

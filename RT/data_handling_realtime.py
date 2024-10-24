@@ -1,7 +1,7 @@
 import pandas as pd
-import time
-
-current_time = time.strftime('%H:%M:%S')
+# import time
+#
+# current_time = time.strftime('%H:%M:%S')
 
 log_file_reading_interval = 1       # File reading interval (sec)
 
@@ -36,6 +36,11 @@ def get_dataframe_from_file():
 
     return dataframe_from_log
 
+
+def save_order_parameters_to_file(line_order_parameters):
+    with open(buy_sell_signals_for_mt5_filepath, 'w', encoding='utf-8') as file:
+        file.writelines(line_order_parameters)
+        print('NEW ORDER IS SUCCESSFULLY SAVED TO FILE')
 
 
 
