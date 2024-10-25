@@ -3,11 +3,16 @@ from data_handling_realtime import save_order_parameters_to_file
 
 
 def last_candle_ohlc(output_df_with_levels):
-    last_candle_high = output_df_with_levels['High'].iloc[-1]
-    last_candle_low = output_df_with_levels['Low'].iloc[-1]
-    last_candle_close = output_df_with_levels['Close'].iloc[-1]
-    ticker = output_df_with_levels['Ticker'].iloc[-1]
-    return last_candle_high, last_candle_low, last_candle_close, ticker
+    try:
+        last_candle_high = output_df_with_levels['High'].iloc[-1]
+        last_candle_low = output_df_with_levels['Low'].iloc[-1]
+        last_candle_close = output_df_with_levels['Close'].iloc[-1]
+        ticker = output_df_with_levels['Ticker'].iloc[-1]
+
+        return last_candle_high, last_candle_low, last_candle_close, ticker
+    except IndexError:
+        print("Must be at least two rows in the source file")
+        return
 
 
 def send_buy_sell_orders(
@@ -26,13 +31,11 @@ def send_buy_sell_orders(
     # BUY ORDER
     # +------------------------------------------------------------------+
 
-    if rejection_signals_series_with_prices.iloc[-1] is None:
-        buy_signal, sell_signal = True, True  # set Flags to True to open way to new orders
-        print('no long orders to save')
-    else:
-        print('there is something different than None')
+    if rejection_signals_series_with_prices.iloc[-1][1] is None:
+        buy_signal, sell_signal = True, True  # Enable new orders
+
     # If there is signal and flag is False:
-    if rejection_signals_series_with_prices.iloc[-1] == 100 and buy_signal:
+    if rejection_signals_series_with_prices.iloc[-1][1] == 100 and buy_signal:
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
         print('▲ ▲ ▲ Buy signal discovered! ▲ ▲ ▲'.upper())
@@ -52,11 +55,11 @@ def send_buy_sell_orders(
     # SELL ORDER
     # +------------------------------------------------------------------+
 
-    if rejection_signals_series_with_prices.iloc[-1] is None:
-        buy_signal, sell_signal = True, True  # set Flags to True
-        print('no short orders to save')
+    if rejection_signals_series_with_prices.iloc[-1][1] is None:
+        buy_signal, sell_signal = True, True  # Enable new orders
 
-    if rejection_signals_series_with_prices.iloc[-1] == -100 and sell_signal:  # If there is signal and flag is True:
+    if rejection_signals_series_with_prices.iloc[-1][1] == -100 and sell_signal:  # If there is signal and flag is True:
+
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
         print('▼ ▼ ▼ Sell signal discovered! ▼ ▼ ▼'.upper())

@@ -74,10 +74,12 @@ def level_rejection_signals(
         current_candle_close = row['Close']
         current_candle_high = row['High']
         current_candle_low = row['Low']
+        current_candle_date = row['Date']
         current_candle_time = row['Time']
 
         print(
             f"---\nAnalyzing candle at index {index}, "
+            f"Date: {current_candle_date}, "
             f"Time: {current_candle_time}, "
         )
 
@@ -126,8 +128,9 @@ def level_rejection_signals(
 
                                     potential_ob_candle = output_df_with_levels.iloc[subsequent_index]
                                     # Convert to datetime for time calculations
-                                    potential_ob_time = pd.to_datetime(potential_ob_candle['Time'])
-
+                                    potential_ob_time = pd.to_datetime(
+                                        str(potential_ob_candle['Date']) + ' ' + str(potential_ob_candle['Time'])
+                                    )
                                     # Calculate time difference between the current potential candle
                                     # and the initial SR level interaction
                                     time_diff = (potential_ob_time - pd.to_datetime(
@@ -203,7 +206,10 @@ def level_rejection_signals(
                                         # THIS IS THE ACTUAL SIGNAL FOR TRADE OPEN
                                         if next_candle_after_ob['Close'] < green_candle_low:
                                             # Store the time of the next candle after OB
-                                            next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
+                                            next_candle_after_ob_time = pd.to_datetime(
+                                                str(next_candle_after_ob['Date']) + ' ' + str(next_candle_after_ob['Time'])
+                                            )
+
                                             if next_candle_after_ob['Close'] < current_sr_level:
                                                 signal = -100  # Short signal
                                                 signal_index = next_index
@@ -240,7 +246,10 @@ def level_rejection_signals(
                                                     break  # Exit the loop if time limit is exceeded
 
                                         elif next_candle_after_ob['Close'] > next_candle_after_ob['Open']:
-                                            next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
+                                            next_candle_after_ob_time = pd.to_datetime(
+                                                str(next_candle_after_ob['Date']) + ' '
+                                                + str(next_candle_after_ob['Time'])
+                                            )
                                             signal_time = next_candle_after_ob['Time']
                                             green_candle_low = next_candle_after_ob['Low']
                                             stop_price = next_candle_after_ob['High']
@@ -293,7 +302,10 @@ def level_rejection_signals(
 
                                 potential_ob_candle = output_df_with_levels.iloc[subsequent_index]
                                 # Convert to datetime for time calculations
-                                potential_ob_time = pd.to_datetime(potential_ob_candle['Time'])
+
+                                potential_ob_time = pd.to_datetime(
+                                    str(potential_ob_time['Date']) + ' ' + str(potential_ob_time['Time'])
+                                )
 
                                 # Calculate time difference between the current potential candle
                                 # and the initial SR level interaction
@@ -462,8 +474,9 @@ def level_rejection_signals(
 
                                     potential_ob_candle = output_df_with_levels.iloc[subsequent_index]
                                     # Convert to datetime for time calculations
-                                    potential_ob_time = pd.to_datetime(potential_ob_candle['Time'])
-
+                                    potential_ob_time = pd.to_datetime(
+                                        str(potential_ob_time['Date']) + ' ' + str(potential_ob_time['Time'])
+                                    )
                                     # Calculate time difference between the current potential candle
                                     # and the initial SR level interaction
                                     time_diff = (potential_ob_time - pd.to_datetime(
@@ -771,11 +784,15 @@ def level_rejection_signals(
 
         # Append values with None for signals not triggered
         level_interaction_signal_for_chart.append((index, level_interaction_signal))
-        rejection_signals_with_prices.append((signal_index, signal, price_level))
+        # rejection_signals_with_prices.append((signal_index, signal, price_level))
         yellow_star_signals_with_prices.append((subsequent_index, ob_signal, stop_price))
         rejection_signals_for_chart.append((signal_index, signal))
         ob_candle_for_chart.append((subsequent_index, ob_signal))
-
+        rejection_signals_with_prices = [
+            (None, None, None),
+            (None, None, None),
+            (1475, 100, 20392),
+        ]   # Hardcode to DEBUG
     else:
         print(f"Max signals for level {level_column} reached")
 
@@ -784,6 +801,26 @@ def level_rejection_signals(
     yellow_star_signals_series_with_prices = pd.Series(yellow_star_signals_with_prices)
     rejection_signals_series_for_chart = pd.Series(rejection_signals_for_chart)
     ob_candle_series_for_chart = pd.Series(ob_candle_for_chart)
+
+    print('\n**************************************************************')
+    for a, b in level_interaction_signals_series_for_chart:
+        if b == 100 or b == -100:
+            print(f'level_interaction_signal at index: {a}, value: {b}')
+
+    for a, b, c in yellow_star_signals_series_with_prices:
+        if b == 100 or b == -100:
+            print(f'yellow_star_signal at index: {a}, value: {b}, price {c}')
+
+    for a, b, c in rejection_signals_series_with_prices:
+        if b == 100 or b == -100:
+            print(f'rejection_signals at index: {a}, value: {b}, price {c}')
+
+    # Print only non-None values in the rejection_signals_series_with_prices Series
+    non_none_signals = rejection_signals_series_with_prices[
+        rejection_signals_series_with_prices.apply(lambda x: x[1] is not None)]
+    print('non_none_signals', non_none_signals)
+
+    print('**************************************************************')
 
     return (rejection_signals_series_with_prices,
             yellow_star_signals_series_with_prices,
