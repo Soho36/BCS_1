@@ -15,7 +15,8 @@ stop_loss_offset = 10               # Is added to SL for Shorts and subtracted f
 # ]  # Example support levels
 
 hardcoded_sr_levels = [
-    ('2024-10-24 20:24:00', 20397.73),
+    ('2024-10-26 23:38:00', 67791.00),
+    ('2024-10-26 23:38:00', 67208.00),
 ]  # Example support levels
 
 level_interactions_threshold = 1
@@ -50,11 +51,9 @@ try:
         # SIGNALS
 
         (
-            rejection_signals_series_with_prices,   # Actual signals for placing a trade
+            signals_to_order_sender_series,
+            actual_signals_series_with_prices,  # Actual signals for placing a trade
             yellow_star_signals_series_with_prices,
-            rejection_signals_series_for_chart,
-            ob_candle_series_for_chart,
-            under_over_series_for_chart,
             over_under_counter
         ) = level_rejection_signals(
             output_df_with_levels,
@@ -62,7 +61,8 @@ try:
             level_interactions_threshold,
             max_time_waiting_for_entry
         )
-        print('\nrejection_signals_series_with_prices: \n', rejection_signals_series_with_prices)
+        print('\nsignals_to_order_sender_series: \n', signals_to_order_sender_series)
+        print('\nactual_signals_series_with_prices: \n', actual_signals_series_with_prices)
         # print('\nyellow_star_signals_series_with_prices: \n', yellow_star_signals_series_with_prices)
         # print('\nrejection_signals_series_for_chart: \n', rejection_signals_series_for_chart)
         # print('\nob_candle_series_for_chart: \n', ob_candle_series_for_chart)
@@ -84,7 +84,7 @@ try:
             buy_signal_discovered,
             sell_signal_discovered,
         ) = send_buy_sell_orders(
-            rejection_signals_series_with_prices,
+            signals_to_order_sender_series,
             buy_signal_discovered,
             sell_signal_discovered,
             last_candle_high,
