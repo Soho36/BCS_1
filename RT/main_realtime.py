@@ -15,8 +15,8 @@ stop_loss_offset = 10               # Is added to SL for Shorts and subtracted f
 # ]  # Example support levels
 
 hardcoded_sr_levels = [
-    ('2024-10-26 23:38:00', 67791.00),
-    ('2024-10-26 23:38:00', 67208.00),
+    ('2024-10-28 00:52:00', 68128.00),
+    ('2024-10-28 00:52:00', 68088.00),
 ]  # Example support levels
 
 level_interactions_threshold = 1
@@ -54,20 +54,17 @@ try:
             signals_to_order_sender_series,
             actual_signals_series_with_prices,  # Actual signals for placing a trade
             yellow_star_signals_series_with_prices,
-            over_under_counter
+            over_under_counter,
+            s_signal
         ) = level_rejection_signals(
             output_df_with_levels,
             sr_levels,
             level_interactions_threshold,
             max_time_waiting_for_entry
         )
-        print('\nsignals_to_order_sender_series: \n', signals_to_order_sender_series)
-        print('\nactual_signals_series_with_prices: \n', actual_signals_series_with_prices)
-        # print('\nyellow_star_signals_series_with_prices: \n', yellow_star_signals_series_with_prices)
-        # print('\nrejection_signals_series_for_chart: \n', rejection_signals_series_for_chart)
-        # print('\nob_candle_series_for_chart: \n', ob_candle_series_for_chart)
-        # print('\nunder_over_series_for_chart: \n', under_over_series_for_chart)
-        # print('\nover_under_counter: \n', over_under_counter)
+        print(f'\ns_signal: {s_signal}\n')
+        # print('\nsignals_to_order_sender_series: \n', signals_to_order_sender_series)
+        # print('\nactual_signals_series_with_prices: \n', actual_signals_series_with_prices)
 
         # LAST CANDLE OHLC (current OHLC)
         (
@@ -79,12 +76,14 @@ try:
             output_df_with_levels
         )
 
+        # TRANSMITTER FUNCTION
+
         # SEND ORDERS
         (
             buy_signal_discovered,
             sell_signal_discovered,
         ) = send_buy_sell_orders(
-            signals_to_order_sender_series,
+            s_signal,
             buy_signal_discovered,
             sell_signal_discovered,
             last_candle_high,

@@ -11,6 +11,7 @@ def level_rejection_signals(
     Main function analyzing price interaction with levels and long/short signals generation logics
     """
 
+    s_signal = None
     yellow_star_signals_with_prices = []
     actual_signals_with_prices = []
     signals_to_order_sender = []
@@ -52,7 +53,8 @@ def level_rejection_signals(
             sig_time,
             p_level,
             t_type,
-            t_side
+            t_side,
+            s_signal
     ):
         """
         Print triggered signals
@@ -65,6 +67,15 @@ def level_rejection_signals(
             f"Candle closing price: {p_level}\n"
             "++++++++++++++++++++++++++"
         )
+        return s_signal     # RETURNS SIGNAL FOR send_buy_sell_orders()
+
+    # def signal_transmitter(
+    #         rejection_short_signal,
+    #         brd_short_signal,
+    #         rejection_long_signal,
+    #         bro_long_signal
+    # ):
+    #     return rejection_short_signal, brd_short_signal, rejection_long_signal, bro_long_signal
 
     sr_level_columns = output_df_with_levels.columns[8:]  # Assuming SR level columns start from the 8th column onwards
     for index, row in output_df_with_levels.iterrows():
@@ -86,18 +97,12 @@ def level_rejection_signals(
         price_level = None
         signal_index = None  # Initialize signal_index
         subsequent_index = None  # Initialize subsequent_index
-        level_interaction_signal = None
         stop_price = None
-        level_interaction_signal_time = None
-        next_candle_after_ob_time = None
         potential_ob_time = None
 
         # Loop through each level column
-        # print(sr_level_columns)
         for level_column in sr_level_columns:
-            # print('we are here')
             current_sr_level = row[level_column]
-
             if current_sr_level is not None:
                 # Check if signal count for this level has reached the threshold
                 if level_signal_count[level_column] < level_interactions_threshold:
@@ -217,13 +222,15 @@ def level_rejection_signals(
                                                 signal_index = next_index
                                                 price_level = next_candle_after_ob['Close']
 
-                                                signal_triggered_output(
+                                                s_signal = signal_triggered_output(
                                                     next_index,
                                                     signal_time,
                                                     price_level,
                                                     trade_type,
-                                                    side
+                                                    side,
+                                                    signal
                                                 )
+
                                                 break
                                             else:
                                                 print(
@@ -398,7 +405,8 @@ def level_rejection_signals(
                                                 signal_time,
                                                 price_level,
                                                 trade_type,
-                                                side
+                                                side,
+                                                signal
                                             )
                                             break
                                         else:
@@ -562,7 +570,8 @@ def level_rejection_signals(
                                                     signal_time,
                                                     price_level,
                                                     trade_type,
-                                                    side
+                                                    side,
+                                                    signal
                                                 )
                                                 break
                                             else:
@@ -730,7 +739,8 @@ def level_rejection_signals(
                                                     signal_time,
                                                     price_level,
                                                     trade_type,
-                                                    side
+                                                    side,
+                                                    signal
                                                 )
                                                 break
                                             else:
@@ -795,7 +805,7 @@ def level_rejection_signals(
         #     (1475, 100, 20392),
         # ]   # Hardcode to DEBUG
     else:
-        print(f"Max signals for level {level_column} reached?")
+        print(f"Loop restart")
 
     yellow_star_signals_series_with_prices = pd.Series(yellow_star_signals_with_prices)
     actual_signals_series_with_prices = pd.Series(actual_signals_with_prices)
@@ -825,4 +835,5 @@ def level_rejection_signals(
     return (signals_to_order_sender_series,
             actual_signals_series_with_prices,
             yellow_star_signals_series_with_prices,
-            level_signal_count)
+            level_signal_count,
+            s_signal)

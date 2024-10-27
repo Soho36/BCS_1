@@ -8,7 +8,6 @@ def last_candle_ohlc(output_df_with_levels):
         last_candle_low = output_df_with_levels['Low'].iloc[-1]
         last_candle_close = output_df_with_levels['Close'].iloc[-1]
         ticker = output_df_with_levels['Ticker'].iloc[-1]
-        # print("!!!!", last_candle_high, last_candle_low, last_candle_close, ticker)
         return last_candle_high, last_candle_low, last_candle_close, ticker
     except IndexError:
         print("Must be at least two rows in the source file")
@@ -16,7 +15,7 @@ def last_candle_ohlc(output_df_with_levels):
 
 
 def send_buy_sell_orders(
-        signals_to_order_sender_series,
+        s_signal,
         buy_signal,
         sell_signal,
         last_candle_high,
@@ -31,11 +30,11 @@ def send_buy_sell_orders(
     # BUY ORDER
     # +------------------------------------------------------------------+
 
-    if signals_to_order_sender_series.iloc[-1] is None:
+    if s_signal is None:
         buy_signal, sell_signal = True, True  # Enable new orders
 
     # If there is signal and flag is False:
-    if signals_to_order_sender_series.iloc[-1] == 100 and buy_signal:
+    if s_signal == 100 and buy_signal:
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
         print('▲ ▲ ▲ Buy signal discovered! ▲ ▲ ▲'.upper())
@@ -55,10 +54,10 @@ def send_buy_sell_orders(
     # SELL ORDER
     # +------------------------------------------------------------------+
 
-    if signals_to_order_sender_series.iloc[-1] is None:
+    if s_signal is None:
         buy_signal, sell_signal = True, True  # Enable new orders
 
-    if signals_to_order_sender_series.iloc[-1] == -100 and sell_signal:  # If there is signal and flag is True:
+    if s_signal == -100 and sell_signal:  # If there is signal and flag is True:
 
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
