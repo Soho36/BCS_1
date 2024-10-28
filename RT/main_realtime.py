@@ -15,8 +15,8 @@ stop_loss_offset = 10               # Is added to SL for Shorts and subtracted f
 # ]  # Example support levels
 
 hardcoded_sr_levels = [
-    ('2024-10-28 00:52:00', 68128.00),
-    ('2024-10-28 00:52:00', 68088.00),
+    ('2024-10-28 21:08:00', 69442.56),
+    ('2024-10-28 21:08:00', 69351.00),
 ]  # Example support levels
 
 level_interactions_threshold = 1

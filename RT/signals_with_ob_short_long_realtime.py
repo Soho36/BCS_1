@@ -65,6 +65,7 @@ def level_rejection_signals(
             f"{t_type.upper()} {t_side.capitalize()} triggered at index {subs_index}, "
             f"Time: {sig_time}, "
             f"Candle closing price: {p_level}\n"
+            f"s_signal: {s_signal}\n"
             "++++++++++++++++++++++++++"
         )
         return s_signal     # RETURNS SIGNAL FOR send_buy_sell_orders()
@@ -228,7 +229,7 @@ def level_rejection_signals(
                                                     price_level,
                                                     trade_type,
                                                     side,
-                                                    signal
+                                                    s_signal
                                                 )
 
                                                 break
@@ -400,7 +401,7 @@ def level_rejection_signals(
                                             signal_index = next_index
                                             price_level = next_candle_after_ob['Close']
 
-                                            signal_triggered_output(
+                                            s_signal = signal_triggered_output(
                                                 next_index,
                                                 signal_time,
                                                 price_level,
@@ -565,7 +566,7 @@ def level_rejection_signals(
                                                 signal_index = next_index
                                                 price_level = next_candle_after_ob['Close']
 
-                                                signal_triggered_output(
+                                                s_signal = signal_triggered_output(
                                                     next_index,
                                                     signal_time,
                                                     price_level,
@@ -734,7 +735,7 @@ def level_rejection_signals(
                                                 signal_index = next_index
                                                 price_level = next_candle_after_ob['Close']
 
-                                                signal_triggered_output(
+                                                s_signal = signal_triggered_output(
                                                     next_index,
                                                     signal_time,
                                                     price_level,
