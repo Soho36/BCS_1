@@ -10,23 +10,20 @@ volume_value = 0.01                 # 1000 MAX for stocks. Used only in AU3 (MT5
 risk_reward = 2                     # Risk/Reward ratio
 stop_loss_offset = 10               # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 
-# hardcoded_sr_levels = [
-#     ('2024-10-23 19:29:00', 20394.00),
-# ]  # Example support levels
-
 hardcoded_sr_levels = [
-    ('2024-10-28 21:08:00', 69442.56),
-    ('2024-10-28 21:08:00', 69351.00),
+    ('2024-10-31 00:37:00', 72363.56),
+    ('2024-10-31 00:37:00', 72308.00),
 ]  # Example support levels
 
-level_interactions_threshold = 1
+level_interactions_threshold = 3
 max_time_waiting_for_entry = 10
 
 # **************************************************************************************************************
-log_file_reading_interval = 1       # File reading interval (sec)
+log_file_reading_interval = 1                   # File reading interval (sec)
 
-buy_signal_discovered = True                   # MUST BE TRUE BEFORE ENTERING MAIN LOOP
-sell_signal_discovered = True                  # MUST BE TRUE BEFORE ENTERING MAIN LOOP
+buy_signal_discovered = True                    # MUST BE TRUE BEFORE ENTERING MAIN LOOP
+sell_signal_discovered = True                   # MUST BE TRUE BEFORE ENTERING MAIN LOOP
+last_signal = None                              # Initiate last signal
 
 try:
     while True:
@@ -51,20 +48,16 @@ try:
         # SIGNALS
 
         (
-            signals_to_order_sender_series,
-            actual_signals_series_with_prices,  # Actual signals for placing a trade
-            yellow_star_signals_series_with_prices,
             over_under_counter,
-            s_signal
+            s_signal,
+            n_index
         ) = level_rejection_signals(
             output_df_with_levels,
             sr_levels,
             level_interactions_threshold,
             max_time_waiting_for_entry
         )
-        print(f'\ns_signal: {s_signal}\n')
-        # print('\nsignals_to_order_sender_series: \n', signals_to_order_sender_series)
-        # print('\nactual_signals_series_with_prices: \n', actual_signals_series_with_prices)
+        print(f'\n!!!!!s_signal: {s_signal}\n')
 
         # LAST CANDLE OHLC (current OHLC)
         (
@@ -83,7 +76,9 @@ try:
             buy_signal_discovered,
             sell_signal_discovered,
         ) = send_buy_sell_orders(
+            last_signal,
             s_signal,
+            n_index,
             buy_signal_discovered,
             sell_signal_discovered,
             last_candle_high,
@@ -93,7 +88,7 @@ try:
             stop_loss_offset,
             risk_reward,
         )
-
+        last_signal = s_signal
         time.sleep(log_file_reading_interval)   # Pause between reading
 
 except KeyboardInterrupt:

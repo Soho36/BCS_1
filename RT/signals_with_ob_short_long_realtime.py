@@ -10,18 +10,13 @@ def level_rejection_signals(
     """
     Main function analyzing price interaction with levels and long/short signals generation logics
     """
-
+    n_index = None
     s_signal = None
-    yellow_star_signals_with_prices = []
-    actual_signals_with_prices = []
-    signals_to_order_sender = []
 
     # Create a dictionary to track signal count per level
     level_signal_count = {i: 0 for i in range(1, len(sr_levels) + 1)}
 
     output_df_with_levels.reset_index(inplace=True)
-    level_column = None
-    # print('dataframe_from_log!!!!', output_df_with_levels)
 
     def check_time_limit(
             m_time_waiting_for_entry,
@@ -49,7 +44,7 @@ def level_rejection_signals(
         return False
 
     def signal_triggered_output(
-            subs_index,
+            n_index,
             sig_time,
             p_level,
             t_type,
@@ -62,21 +57,13 @@ def level_rejection_signals(
 
         print(
             "++++++++++++++++++++++++++\n"
-            f"{t_type.upper()} {t_side.capitalize()} triggered at index {subs_index}, "
+            f"{t_type.upper()} {t_side.capitalize()} triggered at index {n_index}, "
             f"Time: {sig_time}, "
             f"Candle closing price: {p_level}\n"
             f"s_signal: {s_signal}\n"
             "++++++++++++++++++++++++++"
         )
-        return s_signal     # RETURNS SIGNAL FOR send_buy_sell_orders()
-
-    # def signal_transmitter(
-    #         rejection_short_signal,
-    #         brd_short_signal,
-    #         rejection_long_signal,
-    #         bro_long_signal
-    # ):
-    #     return rejection_short_signal, brd_short_signal, rejection_long_signal, bro_long_signal
+        return s_signal, n_index     # RETURNS SIGNAL FOR send_buy_sell_orders()
 
     sr_level_columns = output_df_with_levels.columns[8:]  # Assuming SR level columns start from the 8th column onwards
     for index, row in output_df_with_levels.iterrows():
@@ -93,13 +80,7 @@ def level_rejection_signals(
             f"Time: {current_candle_time}, "
         )
 
-        signal = None  # Reset signal for each row
-        ob_signal = None
-        price_level = None
-        signal_index = None  # Initialize signal_index
         subsequent_index = None  # Initialize subsequent_index
-        stop_price = None
-        potential_ob_time = None
 
         # Loop through each level column
         for level_column in sr_level_columns:
@@ -117,7 +98,6 @@ def level_rejection_signals(
                         if current_candle_high > current_sr_level:
                             if current_candle_close < current_sr_level:
                                 # Over-Under condition met for short
-                                level_interaction_signal = -100
                                 level_signal_count[level_column] += 1
                                 level_interaction_signal_time = current_candle_time
 
@@ -170,7 +150,6 @@ def level_rejection_signals(
                                         if potential_ob_candle['Close'] < current_sr_level:
                                             green_candle_low = potential_ob_candle['Low']
                                             green_candle_found = True
-                                            ob_signal = -100    # Set short signal
                                             print(
                                                 f"Green candle is below the SR level at index {subsequent_index}, "
                                                 f"Time: {potential_ob_time}"
@@ -215,21 +194,22 @@ def level_rejection_signals(
                                         if next_candle_after_ob['Close'] < green_candle_low:
                                             # Store the time of the next candle after OB
                                             next_candle_after_ob_time = pd.to_datetime(
-                                                str(next_candle_after_ob['Date']) + ' ' + str(next_candle_after_ob['Time'])
+                                                str(next_candle_after_ob['Date']) + ' '
+                                                + str(next_candle_after_ob['Time'])
                                             )
 
                                             if next_candle_after_ob['Close'] < current_sr_level:
-                                                signal = -100  # Short signal
-                                                signal_index = next_index
+                                                # signal = -100  # Short signal
+                                                signal = f'-100+{next_index}'
                                                 price_level = next_candle_after_ob['Close']
 
-                                                s_signal = signal_triggered_output(
+                                                s_signal, n_index = signal_triggered_output(
                                                     next_index,
                                                     signal_time,
                                                     price_level,
                                                     trade_type,
                                                     side,
-                                                    s_signal
+                                                    signal
                                                 )
 
                                                 break
@@ -262,7 +242,6 @@ def level_rejection_signals(
                                             )
                                             signal_time = next_candle_after_ob['Time']
                                             green_candle_low = next_candle_after_ob['Low']
-                                            stop_price = next_candle_after_ob['High']
                                             print(
                                                 f"NEW GREEN candle formed at index {next_index}, "
                                                 f"Time: {signal_time}, "
@@ -293,7 +272,6 @@ def level_rejection_signals(
                     if previous_close is not None and previous_close > current_sr_level:
                         if current_candle_close < current_sr_level:
                             # Over condition met for short
-                            level_interaction_signal = -100
                             level_signal_count[level_column] += 1
                             level_interaction_signal_time = current_candle_time
 
@@ -350,7 +328,6 @@ def level_rejection_signals(
                                     if potential_ob_candle['Close'] < current_sr_level:
                                         green_candle_low = potential_ob_candle['Low']
                                         green_candle_found = True
-                                        ob_signal = -100  # Set short signal
                                         print(
                                             f"Green candle is below the SR level at index {subsequent_index}, "
                                             f"Time: {potential_ob_time}"
@@ -397,11 +374,11 @@ def level_rejection_signals(
                                         # Store the time of the next candle after OB
                                         next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
                                         if next_candle_after_ob['Close'] < current_sr_level:
-                                            signal = -100  # Short signal
-                                            signal_index = next_index
+                                            # signal = -100  # Short signal
+                                            signal = f'-100+{next_index}'
                                             price_level = next_candle_after_ob['Close']
 
-                                            s_signal = signal_triggered_output(
+                                            s_signal, n_index = signal_triggered_output(
                                                 next_index,
                                                 signal_time,
                                                 price_level,
@@ -436,7 +413,6 @@ def level_rejection_signals(
                                         next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
                                         signal_time = next_candle_after_ob['Time']
                                         green_candle_low = next_candle_after_ob['Low']
-                                        stop_price = next_candle_after_ob['High']
                                         print(
                                             f"NEW GREEN candle formed at index {next_index}, "
                                             f"Time: {signal_time}, "
@@ -467,7 +443,6 @@ def level_rejection_signals(
                         if current_candle_low < current_sr_level:
                             if current_candle_close > current_sr_level:
                                 # Over-Under condition met for long
-                                level_interaction_signal = 100
                                 level_signal_count[level_column] += 1
                                 level_interaction_signal_time = current_candle_time
                                 print(f"Long: 'Under-over' condition met at index {index}, "
@@ -519,7 +494,6 @@ def level_rejection_signals(
                                         if potential_ob_candle['Close'] > current_sr_level:
                                             red_candle_high = potential_ob_candle['High']
                                             red_candle_found = True
-                                            ob_signal = 100
                                             print(
                                                 f"Red candle is above the SR level at index {subsequent_index}, "
                                                 f"Time: {potential_ob_time}"
@@ -562,11 +536,11 @@ def level_rejection_signals(
                                             # Store the time of the next candle after OB
                                             next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
                                             if next_candle_after_ob['Close'] > current_sr_level:
-                                                signal = 100  # Long signal
-                                                signal_index = next_index
+                                                # signal = 100  # Long signal
+                                                signal = f'100+{next_index}'
                                                 price_level = next_candle_after_ob['Close']
 
-                                                s_signal = signal_triggered_output(
+                                                s_signal, n_index = signal_triggered_output(
                                                     next_index,
                                                     signal_time,
                                                     price_level,
@@ -601,7 +575,6 @@ def level_rejection_signals(
                                             next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
                                             signal_time = next_candle_after_ob['Time']
                                             red_candle_high = next_candle_after_ob['High']
-                                            stop_price = next_candle_after_ob['Low']
                                             print(
                                                 f"NEW RED candle formed at index {next_index}, "
                                                 f"Time: {signal_time}, "
@@ -633,7 +606,6 @@ def level_rejection_signals(
                         if current_candle_close > current_sr_level:
                             if current_candle_close > current_sr_level:
                                 # Under condition met for long
-                                level_interaction_signal = 100
                                 level_signal_count[level_column] += 1
                                 level_interaction_signal_time = current_candle_time
 
@@ -688,7 +660,6 @@ def level_rejection_signals(
                                             # Candle must be above the level
                                             red_candle_high = potential_ob_candle['High']
                                             red_candle_found = True
-                                            ob_signal = 100
                                             print(
                                                 f"It's above the level at index {subsequent_index}, "
                                                 f"Time: {potential_ob_time}"
@@ -731,11 +702,11 @@ def level_rejection_signals(
                                             # Store the time of the next candle after OB
                                             next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
                                             if next_candle_after_ob['Close'] > current_sr_level:
-                                                signal = 100  # Long signal
-                                                signal_index = next_index
+                                                # signal = 100  # Long signal
+                                                signal = f'100+{next_index}'
                                                 price_level = next_candle_after_ob['Close']
 
-                                                s_signal = signal_triggered_output(
+                                                s_signal, n_index = signal_triggered_output(
                                                     next_index,
                                                     signal_time,
                                                     price_level,
@@ -770,7 +741,6 @@ def level_rejection_signals(
                                             next_candle_after_ob_time = pd.to_datetime(next_candle_after_ob['Time'])
                                             signal_time = next_candle_after_ob['Time']
                                             red_candle_high = next_candle_after_ob['High']
-                                            stop_price = next_candle_after_ob['Low']
                                             print(
                                                 f"NEW RED candle formed at index {next_index}, "
                                                 f"Time: {signal_time}, "
@@ -795,46 +765,11 @@ def level_rejection_signals(
                                         break
                                 break  # Exit the level loop once a signal is generated
 
-        # Append values with None for signals not triggered
-        yellow_star_signals_with_prices.append((subsequent_index, ob_signal, stop_price, potential_ob_time))
-        actual_signals_with_prices.append((signal_index, signal, price_level))
-        signals_to_order_sender.append(signal)
+        else:
+            print(f"Loop restart")
 
-        # rejection_signals_with_prices = [
-        #     (None, None, None),
-        #     (None, None, None),
-        #     (1475, 100, 20392),
-        # ]   # Hardcode to DEBUG
-    else:
-        print(f"Loop restart")
-
-    yellow_star_signals_series_with_prices = pd.Series(yellow_star_signals_with_prices)
-    actual_signals_series_with_prices = pd.Series(actual_signals_with_prices)
-    signals_to_order_sender_series = pd.Series(signals_to_order_sender)
-
-    print('\n**************************************************************')
-
-    for a, b, c, d in yellow_star_signals_series_with_prices:
-        if b == 100 or b == -100:
-            print(f'yellow_star_signal at index: {a}, value: {b}, price: {c}, time: {d}')
-
-    for a, b, c in actual_signals_series_with_prices:
-        if b == 100 or b == -100:
-            print(f'actual_signals at index: {a}, value: {b}, price: {c}')
-
-    for a in signals_to_order_sender_series:
-        if a == 100 or a == -100:
-            print(f'additional_signals value: {a}')
-
-    # Print only non-None values in the rejection_signals_series_with_prices Series
-    non_none_signals = actual_signals_series_with_prices[
-        actual_signals_series_with_prices.apply(lambda x: x[1] is not None)]
-    print('non_none_signals', non_none_signals)
-
-    print('**************************************************************')
-
-    return (signals_to_order_sender_series,
-            actual_signals_series_with_prices,
-            yellow_star_signals_series_with_prices,
+    return (
             level_signal_count,
-            s_signal)
+            s_signal,
+            n_index
+    )

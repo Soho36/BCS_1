@@ -15,7 +15,9 @@ def last_candle_ohlc(output_df_with_levels):
 
 
 def send_buy_sell_orders(
+        last_signal,
         s_signal,
+        n_index,
         buy_signal,
         sell_signal,
         last_candle_high,
@@ -25,16 +27,17 @@ def send_buy_sell_orders(
         stop_loss_offset,
         risk_reward
 ):
-
     # +------------------------------------------------------------------+
     # BUY ORDER
     # +------------------------------------------------------------------+
+    print('!!!!last_signal: ', last_signal)
+    print('????s_signal: ', s_signal)
 
-    if s_signal is None:
+    if s_signal == last_signal:
         buy_signal, sell_signal = True, True  # Enable new orders
 
-    # If there is signal and flag is False:
-    if s_signal == 100 and buy_signal:
+    # If there is unique new signal and flag is True:
+    if s_signal != last_signal and s_signal == f'100+{n_index}' and buy_signal:  # If there is signal and flag is True:
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
         print('▲ ▲ ▲ Buy signal discovered! ▲ ▲ ▲'.upper())
@@ -54,11 +57,11 @@ def send_buy_sell_orders(
     # SELL ORDER
     # +------------------------------------------------------------------+
 
-    if s_signal is None:
+    if s_signal == last_signal:
         buy_signal, sell_signal = True, True  # Enable new orders
 
-    if s_signal == -100 and sell_signal:  # If there is signal and flag is True:
-
+    # If there is unique new signal and flag is True:
+    if s_signal != last_signal and s_signal == f'-100+{n_index}' and sell_signal:
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
         print('▼ ▼ ▼ Sell signal discovered! ▼ ▼ ▼'.upper())
