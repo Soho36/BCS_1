@@ -32,24 +32,24 @@ def level_rejection_signals(
         """
         if t_diff > m_time_waiting_for_entry:
             print(
-                "-----------------\n"
-                f"{trce}: Exceeded {m_time_waiting_for_entry}-minute window "
+                "xxxxxxxxxxxxxxxxx\n"
+                f"x {trce}: Exceeded {m_time_waiting_for_entry}-minute window "
                 f"at index {subs_index}, \n"
-                f"Level interaction time: {lev_inter_signal_time}, \n"
-                f"Candle time: {candle_time}, \n"
-                f"Time diff: {t_diff} minutes\n"
-                "-----------------"
+                f"x Level interaction time: {lev_inter_signal_time}, \n"
+                f"x Candle time: {candle_time}, \n"
+                f"x Time diff: {t_diff} minutes\n"
+                "xxxxxxxxxxxxxxxxx"
             )
             return True
         return False
 
     def signal_triggered_output(
-            n_index,
+            nn_index,
             sig_time,
             p_level,
             t_type,
             t_side,
-            s_signal
+            ss_signal
     ):
         """
         Print triggered signals
@@ -57,13 +57,13 @@ def level_rejection_signals(
 
         print(
             "++++++++++++++++++++++++++\n"
-            f"{t_type.upper()} {t_side.capitalize()} triggered at index {n_index}, "
+            f"+ {t_type.upper()} {t_side.capitalize()} triggered at index {nn_index}, "
             f"Time: {sig_time}, "
             f"Candle closing price: {p_level}\n"
-            f"s_signal: {s_signal}\n"
+            f"+ s_signal: {ss_signal}\n"
             "++++++++++++++++++++++++++"
         )
-        return s_signal, n_index     # RETURNS SIGNAL FOR send_buy_sell_orders()
+        return ss_signal, nn_index     # RETURNS SIGNAL FOR send_buy_sell_orders()
 
     sr_level_columns = output_df_with_levels.columns[8:]  # Assuming SR level columns start from the 8th column onwards
     for index, row in output_df_with_levels.iterrows():
@@ -101,7 +101,7 @@ def level_rejection_signals(
                                 level_signal_count[level_column] += 1
                                 level_interaction_signal_time = current_candle_time
 
-                                print(f"Short: 'Over-under' condition met at index {index}, "
+                                print(f"▲▼ Short: 'Over-under' condition met at index {index}, "
                                       f"Time: {current_candle_time}, "
                                       f"SR level: {current_sr_level}")
 
@@ -143,7 +143,7 @@ def level_rejection_signals(
                                     # Check if it's a green candle (close > open)
                                     if potential_ob_candle['Close'] > potential_ob_candle['Open']:
                                         print(
-                                            f"Last GREEN candle found at index {subsequent_index}, "
+                                            f"○ Last GREEN candle found at index {subsequent_index}, "
                                             f"Time: {potential_ob_time}"
                                         )
                                         # Check if the green candle is below the SR level
@@ -152,6 +152,7 @@ def level_rejection_signals(
                                             green_candle_found = True
                                             print(
                                                 f"Green candle is below the SR level at index {subsequent_index}, "
+                                                f"Now waiting for next candle to close below "
                                                 f"Time: {potential_ob_time}"
                                             )
                                             break
@@ -275,7 +276,7 @@ def level_rejection_signals(
                             level_signal_count[level_column] += 1
                             level_interaction_signal_time = current_candle_time
 
-                            print(f"Short: 'Under' condition met at index {index}, "
+                            print(f"▼ Short: 'Under' condition met at index {index}, "
                                   f"Time: {current_candle_time}, "
                                   f"SR level: {current_sr_level}")
 
@@ -320,7 +321,7 @@ def level_rejection_signals(
                                 # Check if it's a green candle (close > open)
                                 if potential_ob_candle['Close'] > potential_ob_candle['Open']:
                                     print(
-                                        f"GREEN candle found at index {subsequent_index}, "
+                                        f"○ Last GREEN candle found at index {subsequent_index}, "
                                         f"Time: {potential_ob_time}"
                                     )
 
@@ -329,7 +330,7 @@ def level_rejection_signals(
                                         green_candle_low = potential_ob_candle['Low']
                                         green_candle_found = True
                                         print(
-                                            f"Green candle is below the SR level at index {subsequent_index}, "
+                                            f"⦿ It's below the level at index {subsequent_index}, "
                                             f"Time: {potential_ob_time}"
                                         )
                                         break  # Exit the loop, as we have found the valid green candle below the level
@@ -445,7 +446,7 @@ def level_rejection_signals(
                                 # Over-Under condition met for long
                                 level_signal_count[level_column] += 1
                                 level_interaction_signal_time = current_candle_time
-                                print(f"Long: 'Under-over' condition met at index {index}, "
+                                print(f"▼▲ Long: 'Under-over' condition met at index {index}, "
                                       f"Time: {current_candle_time}, "
                                       f"SR level: {current_sr_level}")
 
@@ -487,7 +488,7 @@ def level_rejection_signals(
                                     # Check if it's a red candle (close < open)
                                     if potential_ob_candle['Close'] < potential_ob_candle['Open']:
                                         print(
-                                            f"Last RED candle found at index {subsequent_index}, "
+                                            f"○ Last RED candle found at index {subsequent_index}, "
                                             f"Time: {potential_ob_time}"
                                         )
                                         # Check if the red candle is below the SR level
@@ -609,7 +610,7 @@ def level_rejection_signals(
                                 level_signal_count[level_column] += 1
                                 level_interaction_signal_time = current_candle_time
 
-                                print(f"Long: 'Over' condition met at index {index}, "
+                                print(f"▲ Long: 'Over' condition met at index {index}, "
                                       f"Time: {current_candle_time}, "
                                       f"SR level: {current_sr_level}")
 
@@ -652,7 +653,7 @@ def level_rejection_signals(
                                     # Check if it's a red candle (close < open)
                                     if potential_ob_candle['Close'] < potential_ob_candle['Open']:
                                         print(
-                                            f"Last RED candle found at index {subsequent_index}, "
+                                            f"○ Last RED candle found at index {subsequent_index}, "
                                             f"Time: {potential_ob_time}"
                                         )
                                         # Check if the red candle is above the SR level
@@ -661,7 +662,7 @@ def level_rejection_signals(
                                             red_candle_high = potential_ob_candle['High']
                                             red_candle_found = True
                                             print(
-                                                f"It's above the level at index {subsequent_index}, "
+                                                f"⦿ It's above the level at index {subsequent_index}, "
                                                 f"Time: {potential_ob_time}"
                                             )
                                             break
@@ -765,8 +766,8 @@ def level_rejection_signals(
                                         break
                                 break  # Exit the level loop once a signal is generated
 
-        else:
-            print(f"Loop restart")
+        # else:
+        #     print(f"Loop restart")
 
     return (
             level_signal_count,

@@ -30,17 +30,17 @@ def send_buy_sell_orders(
     # +------------------------------------------------------------------+
     # BUY ORDER
     # +------------------------------------------------------------------+
-    print('!!!!last_signal: ', last_signal)
-    print('????s_signal: ', s_signal)
+    print(f'Last signal: {last_signal}'.upper())
+    print(f'Current signal: {s_signal}'.upper())
 
     if s_signal == last_signal:
-        buy_signal, sell_signal = True, True  # Enable new orders
+        buy_signal, sell_signal = True, True  # Set Flags to enable new orders
 
     # If there is unique new signal and flag is True:
     if s_signal != last_signal and s_signal == f'100+{n_index}' and buy_signal:  # If there is signal and flag is True:
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
-        print('▲ ▲ ▲ Buy signal discovered! ▲ ▲ ▲'.upper())
+        print('▲ ▲ ▲ Buy order has been sent to MT5! ▲ ▲ ▲'.upper())
 
         # ORDER PARAMETERS
         stop_loss_price = round(last_candle_low - stop_loss_offset, 3)
@@ -64,7 +64,7 @@ def send_buy_sell_orders(
     if s_signal != last_signal and s_signal == f'-100+{n_index}' and sell_signal:
         winsound.PlaySound('chord.wav', winsound.SND_FILENAME)
         print()
-        print('▼ ▼ ▼ Sell signal discovered! ▼ ▼ ▼'.upper())
+        print('▼ ▼ ▼ Sell order has been sent to MT5! ▼ ▼ ▼'.upper())
 
         # ORDER PARAMETERS
         stop_loss_price = round(last_candle_high + stop_loss_offset)

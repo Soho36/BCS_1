@@ -104,8 +104,8 @@ def process_levels(dataframe_from_log, hardcoded_sr_levels):
         sr_levels_out
     ) = (levels_discovery(dataframe_from_log, hardcoded_sr_levels))
 
-    print('SR_levels_out: \n', sr_levels_out)
-    print('levels_startpoints: \n', levels_startpoints_to_chart)
+    # print('SR_levels_out: \n', sr_levels_out)
+    # print('levels_startpoints: \n', levels_startpoints_to_chart)
 
     # Step 2: Add columns and levels to dataframe
     dataframe_from_log = dataframe_from_log.copy()
