@@ -11,8 +11,8 @@ risk_reward = 2                     # Risk/Reward ratio
 stop_loss_offset = 10               # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 
 hardcoded_sr_levels = [
-    ('2024-10-31 00:37:00', 72363.56),
-    ('2024-10-31 00:37:00', 72308.00),
+    ('2024-10-31 21:23:00', 70572.00),
+    ('2024-10-31 21:23:00', 70479.00),
 ]  # Example support levels
 
 level_interactions_threshold = 3
