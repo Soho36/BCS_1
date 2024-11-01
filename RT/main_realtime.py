@@ -11,14 +11,17 @@ import os
 
 volume_value = 0.01                 # 1000 MAX for stocks. Used only in AU3 (MT5 assigns volume itself)
 risk_reward = 2                     # Risk/Reward ratio
-stop_loss_offset = 10               # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
+stop_loss_offset = 20               # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 
 hardcoded_sr_levels = [
-    ('2024-11-01 00:53:00', 70459.00),
-    ('2024-11-01 00:53:00', 70367.00),
+    ('2024-11-01 11:12:00', 69053.00),
+    ('2024-11-01 11:12:00', 68797.00),
+    ('2024-11-01 11:12:00', 69639.00),
+    ('2024-11-01 11:12:00', 70585.00),
+    ('2024-11-01 11:12:00', 68398.00),
 ]  # Example support levels
 
-level_interactions_threshold = 3
+level_interactions_threshold = 2
 max_time_waiting_for_entry = 10
 
 # **************************************************************************************************************
@@ -133,4 +136,3 @@ if __name__ == "__main__":
         print('Program stopped manually'.upper())
         observer.stop()
     observer.join()
-
