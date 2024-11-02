@@ -60,11 +60,11 @@ def run_main_functions(b_s_flag, s_s_flag, l_signal):
     print('\n********************************************************************************************************')
     print('\n********************************************************************************************************')
     # GET DATAFRAME FROM LOG
-    dataframe_from_log = get_dataframe_from_file()
+    dataframe_from_log, first_date2 = get_dataframe_from_file()
     # print('\nget_dataframe_from_file: \n', dataframe_from_log[-10:])
 
     # GET LEVELS FROM FILE
-    hardcoded_sr_levels = get_levels_from_file()
+    hardcoded_sr_levels = get_levels_from_file(first_date2)
     print('hardcoded_sr_levels from file: \n', hardcoded_sr_levels)
 
     # PRICE LEVELS

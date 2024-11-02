@@ -1,5 +1,4 @@
 import pandas as pd
-import ast
 
 log_file_reading_interval = 1       # File reading interval (sec)
 
@@ -42,7 +41,7 @@ buy_sell_signals_for_mt5_filepath = (
 # SILLAMAE PATHS
 
 levels_path = ('C:\\Users\\Vova deduskin lap\\AppData\\Roaming\\MetaQuotes\\Terminal\\'
-        'D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Files\\hardcoded_sr_levels.csv')
+               'D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Files\\hardcoded_sr_levels.csv')
 
 
 def get_dataframe_from_file():
@@ -52,18 +51,15 @@ def get_dataframe_from_file():
     log_df['Datetime'] = pd.to_datetime(log_df['Date'] + ' ' + log_df['Time'], format='ISO8601')
     log_df.set_index('Datetime', inplace=True)
     dataframe_from_log = log_df.loc[:, ['Ticker', 'Date', 'Time', 'Open', 'High', 'Low', 'Close']]
+    datetime_index = log_df.index
+    first_date = str(datetime_index[0])
 
-    return dataframe_from_log
+    return dataframe_from_log, first_date
 
 
-def get_levels_from_file():
+def get_levels_from_file(first_date2):
     with open(levels_path, 'r', encoding='utf-8') as file:
-        # Read the entire content of the file as a single string
-        content = file.read()
-
-        # Use ast.literal_eval to safely evaluate the string as a Python literal
-        levels = ast.literal_eval(content)
-
+        levels = [(first_date2, float(line.strip())) for line in file]
     return levels
 
 
@@ -71,8 +67,4 @@ def save_order_parameters_to_file(line_order_parameters):   # Called from orders
     with open(buy_sell_signals_for_mt5_filepath, 'w', encoding='utf-8') as file:
         file.writelines(line_order_parameters)
         print('NEW ORDER IS SUCCESSFULLY SAVED TO FILE')
-
-
-
-
 
