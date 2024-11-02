@@ -75,9 +75,9 @@ def level_rejection_signals(
         current_candle_time = row['Time']
 
         print(
-            f"---\nAnalyzing candle at index {index}, "
-            f"Date: {current_candle_date}, "
-            f"Time: {current_candle_time}, "
+            # f"---\nAnalyzing candle at index {index}, "
+            # f"Date: {current_candle_date}, "
+            # f"Time: {current_candle_time}, "
         )
 
         subsequent_index = None  # Initialize subsequent_index

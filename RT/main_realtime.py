@@ -1,9 +1,10 @@
-from RT.data_handling_realtime import get_dataframe_from_file
+from RT.data_handling_realtime import get_dataframe_from_file, get_levels_from_file
 from price_levels_manual_realtime import process_levels
 from signals_with_ob_short_long_realtime import level_rejection_signals
 from orders_sender import last_candle_ohlc, send_buy_sell_orders
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
 import time
 import os
 
@@ -11,24 +12,24 @@ import os
 
 volume_value = 0.01                 # 1000 MAX for stocks. Used only in AU3 (MT5 assigns volume itself)
 risk_reward = 2                     # Risk/Reward ratio
-stop_loss_offset = 20               # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
+stop_loss_offset = 0               # Is added to SL for Shorts and subtracted for Longs (can be equal to spread)
 
-hardcoded_sr_levels = [
-    ('2024-11-01 11:12:00', 69053.00),
-    ('2024-11-01 11:12:00', 68797.00),
-    ('2024-11-01 11:12:00', 69639.00),
-    ('2024-11-01 11:12:00', 70585.00),
-    ('2024-11-01 11:12:00', 68398.00),
-]  # Example support levels
+# hardcoded_sr_levels = [('2024-11-02 16:19:00', 69245.00), ('2024-11-02 16:19:00', 69167.00)]  # Example support levels
 
 level_interactions_threshold = 2
 max_time_waiting_for_entry = 10
 
 # **************************************************************************************************************
 
-path = 'C:\\Users\\Liikurserv\\AppData\\Roaming\\MetaQuotes\\Terminal\\1D0E83E0BCAA42603583233CF21A762C\\MQL5\\Files'
-file = 'OHLCVData_475.csv'
+# LIIKURI PATHS
+# path = 'C:\\Users\\Liikurserv\\AppData\\Roaming\\MetaQuotes\\Terminal\\1D0E83E0BCAA42603583233CF21A762C\\MQL5\\Files'
+# file = 'OHLCVData_475.csv'
+# LIIKURI PATHS
 
+# SILLAMAE PATHS
+path = 'C:\\Users\\Vova deduskin lap\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Files'
+file = 'OHLCVData_475.csv'
+# SILLAMAE PATHS
 
 buy_signal_flag = True                    # MUST BE TRUE BEFORE ENTERING MAIN LOOP
 sell_signal_flag = True                   # MUST BE TRUE BEFORE ENTERING MAIN LOOP
@@ -59,8 +60,11 @@ def run_main_functions(b_s_flag, s_s_flag, l_signal):
     print('\n---------------------------------------------------------------------------------------------------------')
     # GET DATAFRAME FROM LOG
     dataframe_from_log = get_dataframe_from_file()
-    print('\nget_dataframe_from_file: \n', dataframe_from_log[-10:])
+    # print('\nget_dataframe_from_file: \n', dataframe_from_log[-10:])
 
+    # GET LEVELS FROM FILE
+    hardcoded_sr_levels = get_levels_from_file()
+    print('hardcoded_sr_levels from file: \n', hardcoded_sr_levels)
     # PRICE LEVELS
     (
         levels_startpoints_to_chart,
@@ -123,16 +127,21 @@ def run_main_functions(b_s_flag, s_s_flag, l_signal):
 
 
 if __name__ == "__main__":
-    event_handler = CsvChangeHandler()
-    observer = Observer()
-    observer.schedule(event_handler, path, recursive=False)  # CSV folder path
-    observer.start()
-
     try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print()
-        print('Program stopped manually'.upper())
-        observer.stop()
-    observer.join()
+        event_handler = CsvChangeHandler()
+        observer = Observer()
+        observer.schedule(event_handler, path, recursive=False)  # CSV folder path
+        observer.start()
+    except FileNotFoundError as e:
+        print(f'Error: {e}. \nPlease check that the path: {path} exists and is accessible.')
+
+    else:
+        # Run the observer only if no exceptions were raised
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print()
+            print('Program stopped manually'.upper())
+            observer.stop()
+        observer.join()

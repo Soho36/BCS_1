@@ -47,7 +47,7 @@ def send_buy_sell_orders(
         take_profit_price = round((((last_candle_close - stop_loss_price) * risk_reward)
                                    + last_candle_close) + stop_loss_offset, 3)
 
-        line_order_parameters = f'{ticker},Buy,{stop_loss_price},{take_profit_price}'
+        line_order_parameters = f'{ticker}, Buy, {stop_loss_price}, {take_profit_price}'
 
         save_order_parameters_to_file(line_order_parameters)    # Located in data_handling_realtime.py
 
@@ -71,7 +71,7 @@ def send_buy_sell_orders(
         take_profit_price = round((last_candle_close - ((stop_loss_price - last_candle_close) *
                                                         risk_reward)) + stop_loss_offset, 3)
 
-        line_order_parameters = f'{ticker},Sell,{stop_loss_price},{take_profit_price}'
+        line_order_parameters = f'{ticker}, Sell, {stop_loss_price}, {take_profit_price}'
 
         save_order_parameters_to_file(line_order_parameters)    # Located in data_handling_realtime.py
 

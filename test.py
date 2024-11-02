@@ -1,33 +1,20 @@
-import time
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import ast
 
-path = 'C:\\Users\\Liikurserv\\AppData\\Roaming\\MetaQuotes\\Terminal\\1D0E83E0BCAA42603583233CF21A762C\\MQL5\\Files'
-file = 'OHLCVData_475.csv'
+path = ('C:\\Users\\Vova deduskin lap\\AppData\\Roaming\\MetaQuotes\\Terminal\\'
+        'D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Files\\hardcoded_sr_levels.csv')
 
 
-class CsvChangeHandler(FileSystemEventHandler):
-    def on_modified(self, event):
-        print(f"File modified: {event.src_path}")  # This should print on any modification
-        if not event.src_path.endswith(file):  # Replace with your CSV file path
-            return
-        print("CSV file updated; triggering function calls...")
-        run_main_functions()  # Call a function that contains your main calls
+def get_levels_from_file():
+    with open(path, 'r', encoding='utf-8') as file:
+        # Read the entire content of the file as a single string
+        content = file.read()
+
+        # Use ast.literal_eval to safely evaluate the string as a Python literal
+        levels = ast.literal_eval(content)
+
+    return levels
 
 
-def run_main_functions():
-    print('The file has been changed')
-
-
-if __name__ == "__main__":
-    event_handler = CsvChangeHandler()
-    observer = Observer()
-    observer.schedule(event_handler, path, recursive=False)  # CSV folder path
-    observer.start()
-
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
+# Example usage:
+levels_from_file = get_levels_from_file()
+print(levels_from_file)
