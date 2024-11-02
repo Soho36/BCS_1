@@ -44,7 +44,17 @@ levels_path = ('C:\\Users\\Vova deduskin lap\\AppData\\Roaming\\MetaQuotes\\Term
                'D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Files\\hardcoded_sr_levels.csv')
 
 
+def leave_only_last_line():
+    with open(mt5_logging_file_path, 'r', encoding='utf-16') as file:
+        lines = file.readlines()
+        # Check if there's at least one line to keep
+        if lines:
+            with open(mt5_logging_file_path, 'w', encoding='utf-16')as file:
+                file.write(lines[-1])  # Write only the first line back to the file
+
+
 def get_dataframe_from_file():
+
     log_df = pd.read_csv(mt5_logging_file_path, sep=';', encoding='utf-16', engine='python')
     new_column_names = ['Ticker', 'Timeframe', 'Date', 'Time', 'Open', 'High', 'Low', 'Close', 'Volume']
     log_df.columns = new_column_names

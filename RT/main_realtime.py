@@ -1,4 +1,4 @@
-from RT.data_handling_realtime import get_dataframe_from_file, get_levels_from_file
+from RT.data_handling_realtime import get_dataframe_from_file, get_levels_from_file, leave_only_last_line
 from price_levels_manual_realtime import process_levels
 from signals_with_ob_short_long_realtime import level_rejection_signals
 from orders_sender import last_candle_ohlc, send_buy_sell_orders
@@ -19,6 +19,7 @@ stop_loss_offset = 0               # Is added to SL for Shorts and subtracted fo
 level_interactions_threshold = 2
 max_time_waiting_for_entry = 10
 
+clear_csv_before_start = True
 # **************************************************************************************************************
 
 # LIIKURI PATHS
@@ -34,6 +35,10 @@ file = 'OHLCVData_475.csv'
 buy_signal_flag = True                    # MUST BE TRUE BEFORE ENTERING MAIN LOOP
 sell_signal_flag = True                   # MUST BE TRUE BEFORE ENTERING MAIN LOOP
 last_signal = None                              # Initiate last signal
+
+# LEAVE ONLY FIRST OHLC IN CSV BEFORE CREATING DATAFRAME
+if clear_csv_before_start:
+    leave_only_last_line()
 
 """
 Watchdog module monitors csv changes for adding new OHLC row and trigger main.py function calls 
@@ -59,6 +64,7 @@ class CsvChangeHandler(FileSystemEventHandler):
 def run_main_functions(b_s_flag, s_s_flag, l_signal):
     print('\n********************************************************************************************************')
     print('\n********************************************************************************************************')
+
     # GET DATAFRAME FROM LOG
     dataframe_from_log, first_date2 = get_dataframe_from_file()
     # print('\nget_dataframe_from_file: \n', dataframe_from_log[-10:])
