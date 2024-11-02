@@ -57,7 +57,8 @@ class CsvChangeHandler(FileSystemEventHandler):
 
 
 def run_main_functions(b_s_flag, s_s_flag, l_signal):
-    print('\n---------------------------------------------------------------------------------------------------------')
+    print('\n********************************************************************************************************')
+    print('\n********************************************************************************************************')
     # GET DATAFRAME FROM LOG
     dataframe_from_log = get_dataframe_from_file()
     # print('\nget_dataframe_from_file: \n', dataframe_from_log[-10:])
@@ -65,6 +66,7 @@ def run_main_functions(b_s_flag, s_s_flag, l_signal):
     # GET LEVELS FROM FILE
     hardcoded_sr_levels = get_levels_from_file()
     print('hardcoded_sr_levels from file: \n', hardcoded_sr_levels)
+
     # PRICE LEVELS
     (
         levels_startpoints_to_chart,
