@@ -39,6 +39,7 @@ last_signal = None                              # Initiate last signal
 # LEAVE ONLY FIRST OHLC IN CSV BEFORE CREATING DATAFRAME
 if clear_csv_before_start:
     leave_only_last_line()
+    print('Csv first lines cleared before starting script'.upper())
 
 """
 Watchdog module monitors csv changes for adding new OHLC row and trigger main.py function calls 
