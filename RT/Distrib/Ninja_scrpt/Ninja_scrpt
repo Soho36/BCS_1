@@ -1,0 +1,129 @@
+#region Using declarations
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Xml.Serialization;
+using NinjaTrader.Cbi;
+using NinjaTrader.Gui;
+using NinjaTrader.Gui.Chart;
+using NinjaTrader.Gui.SuperDom;
+using NinjaTrader.Gui.Tools;
+using NinjaTrader.Data;
+using NinjaTrader.NinjaScript;
+using NinjaTrader.Core.FloatingPoint;
+using NinjaTrader.NinjaScript.Indicators;
+using NinjaTrader.NinjaScript.DrawingTools;
+#endregion
+
+namespace NinjaTrader.NinjaScript.Strategies
+{
+    public class MyCustomStrategy : Strategy
+    {
+        private bool executeLongTrade = false;
+		private bool executeShortTrade = false;
+        private double stopPrice = 0;
+        private double targetPrice = 0;
+
+        protected override void OnStateChange()
+        {
+            if (State == State.SetDefaults)
+            {
+                Description = @"Transmits buy and sell signals from file to platform";
+                Name = "Filetransmit2";
+                Calculate = Calculate.OnBarClose;
+                EntriesPerDirection = 1;
+                EntryHandling = EntryHandling.AllEntries;
+                IsExitOnSessionCloseStrategy = true;
+                ExitOnSessionCloseSeconds = 30;
+                IsFillLimitOnTouch = false;
+                MaximumBarsLookBack = MaximumBarsLookBack.TwoHundredFiftySix;
+                OrderFillResolution = OrderFillResolution.Standard;
+                Slippage = 0;
+                StartBehavior = StartBehavior.WaitUntilFlat;
+                TimeInForce = TimeInForce.Gtc;
+                TraceOrders = false;
+                RealtimeErrorHandling = RealtimeErrorHandling.StopCancelClose;
+                StopTargetHandling = StopTargetHandling.PerEntryExecution;
+                BarsRequiredToTrade = 20;
+                IsInstantiatedOnEachOptimizationIteration = true;
+            }
+        }
+
+        protected override void OnBarUpdate()
+        {
+            if (CurrentBars[0] < BarsRequiredToTrade)
+                return;
+
+            // string signalFilePath = "C:\\Trading\\trade_signal.txt";
+			string signalFilePath = "E:\\YandexDisk\\Desktop_Zal\\trade_signal.txt";
+
+
+            if (File.Exists(signalFilePath))
+            {
+                try
+                {
+                    // Read and parse file content
+					// Example of file contents:
+					// Buy, 20314, 20330
+                    string signal = File.ReadAllText(signalFilePath).Trim();
+                    string[] parts = signal.Split(',');
+
+                    if (parts.Length == 3)
+                    {
+                        string tradeDirection = parts[0].Trim();
+                        if (double.TryParse(parts[1].Trim(), out stopPrice) &&
+                            double.TryParse(parts[2].Trim(), out targetPrice))
+                        {
+                            // Check trade direction and set execution flag
+                            if (tradeDirection.Equals("Buy", StringComparison.OrdinalIgnoreCase) && Position.MarketPosition == MarketPosition.Flat)
+                            {
+                                executeLongTrade = true;
+                                File.WriteAllText(signalFilePath, string.Empty); // Clear the file content
+                            }
+							if (tradeDirection.Equals("Sell", StringComparison.OrdinalIgnoreCase) && Position.MarketPosition == MarketPosition.Flat)
+                            {
+                                executeShortTrade = true;
+                                File.WriteAllText(signalFilePath, string.Empty); // Clear the file content
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Print($"Error reading signal file: {ex.Message}");
+                }
+            }
+
+            if (executeLongTrade)
+            {
+                double entryPrice = Close[0]; // Current close price as entry price
+
+                // Enter long with SL and TP from the file
+                EnterLong("MarketOrder"); // Place market order
+                SetStopLoss("MarketOrder", CalculationMode.Price, stopPrice, false); // Set SL from file
+                SetProfitTarget("MarketOrder", CalculationMode.Price, targetPrice); // Set TP from file
+
+                executeLongTrade = false; // Reset the flag for longs
+            }
+			if (executeShortTrade)
+            {
+                double entryPrice = Close[0]; // Current close price as entry price
+
+                // Enter short with SL and TP from the file
+                EnterShort("MarketOrder"); // Place market order
+                SetStopLoss("MarketOrder", CalculationMode.Price, stopPrice, false); // Set SL from file
+                SetProfitTarget("MarketOrder", CalculationMode.Price, targetPrice); // Set TP from file
+
+                executeShortTrade = false; // Reset the flag for shorts
+            }
+        }
+    }
+}
