@@ -57,6 +57,7 @@ levels_path = (
     f'C:\\Users\\Liikurserv\\PycharmProjects\\BCS_1\\RT\\hardcoded_sr_levels.csv'
 )
 
+
 def leave_only_last_line():
     with open(mt5_logging_file_path, 'r', encoding='utf-16') as file:
         lines = file.readlines()

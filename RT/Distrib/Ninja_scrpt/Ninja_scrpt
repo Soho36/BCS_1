@@ -28,70 +28,51 @@ namespace NinjaTrader.NinjaScript.Strategies
     public class MyCustomStrategy : Strategy
     {
         private bool executeLongTrade = false;
-		private bool executeShortTrade = false;
+        private bool executeShortTrade = false;
         private double stopPrice = 0;
-        private double targetPrice = 0;
+        private double targetPrice1 = 0;
+        private double targetPrice2 = 0;
 
         protected override void OnStateChange()
         {
             if (State == State.SetDefaults)
             {
-                Description = @"Transmits buy and sell signals from file to platform";
                 Name = "Filetransmit2";
-                Calculate = Calculate.OnBarClose;
-                EntriesPerDirection = 1;
-                EntryHandling = EntryHandling.AllEntries;
-                IsExitOnSessionCloseStrategy = true;
-                ExitOnSessionCloseSeconds = 30;
-                IsFillLimitOnTouch = false;
-                MaximumBarsLookBack = MaximumBarsLookBack.TwoHundredFiftySix;
-                OrderFillResolution = OrderFillResolution.Standard;
-                Slippage = 0;
-                StartBehavior = StartBehavior.WaitUntilFlat;
-                TimeInForce = TimeInForce.Gtc;
-                TraceOrders = false;
-                RealtimeErrorHandling = RealtimeErrorHandling.StopCancelClose;
-                StopTargetHandling = StopTargetHandling.PerEntryExecution;
-                BarsRequiredToTrade = 20;
-                IsInstantiatedOnEachOptimizationIteration = true;
+                Calculate = Calculate.OnEachTick;
+                EntriesPerDirection = 3; // Allow 2 entries
+                EntryHandling = EntryHandling.UniqueEntries;
             }
         }
 
         protected override void OnBarUpdate()
         {
-            if (CurrentBars[0] < BarsRequiredToTrade)
-                return;
+            if (CurrentBars[0] < BarsRequiredToTrade) return;
 
-            // string signalFilePath = "C:\\Trading\\trade_signal.txt";
-			string signalFilePath = "E:\\YandexDisk\\Desktop_Zal\\trade_signal.txt";
-
+            string signalFilePath = "C:\\Users\\Liikurserv\\PycharmProjects\\BCS_1\\RT\\trade_signal.txt";
 
             if (File.Exists(signalFilePath))
             {
                 try
                 {
-                    // Read and parse file content
-					// Example of file contents:
-					// Buy, 20314, 20330
                     string signal = File.ReadAllText(signalFilePath).Trim();
                     string[] parts = signal.Split(',');
 
-                    if (parts.Length == 3)
+                    if (parts.Length == 4)
                     {
                         string tradeDirection = parts[0].Trim();
                         if (double.TryParse(parts[1].Trim(), out stopPrice) &&
-                            double.TryParse(parts[2].Trim(), out targetPrice))
+                            double.TryParse(parts[2].Trim(), out targetPrice1) &&
+                            double.TryParse(parts[3].Trim(), out targetPrice2))
                         {
-                            // Check trade direction and set execution flag
                             if (tradeDirection.Equals("Buy", StringComparison.OrdinalIgnoreCase) && Position.MarketPosition == MarketPosition.Flat)
                             {
                                 executeLongTrade = true;
-                                File.WriteAllText(signalFilePath, string.Empty); // Clear the file content
+                                File.WriteAllText(signalFilePath, string.Empty);
                             }
-							if (tradeDirection.Equals("Sell", StringComparison.OrdinalIgnoreCase) && Position.MarketPosition == MarketPosition.Flat)
+                            else if (tradeDirection.Equals("Sell", StringComparison.OrdinalIgnoreCase) && Position.MarketPosition == MarketPosition.Flat)
                             {
                                 executeShortTrade = true;
-                                File.WriteAllText(signalFilePath, string.Empty); // Clear the file content
+                                File.WriteAllText(signalFilePath, string.Empty);
                             }
                         }
                     }
@@ -104,25 +85,34 @@ namespace NinjaTrader.NinjaScript.Strategies
 
             if (executeLongTrade)
             {
-                double entryPrice = Close[0]; // Current close price as entry price
+                double entryPrice = Close[0];
+                Print($"Placing 3 long orders with TP1: {targetPrice1}, TP2: {targetPrice2}, SL: {stopPrice}");
 
-                // Enter long with SL and TP from the file
-                EnterLong("MarketOrder"); // Place market order
-                SetStopLoss("MarketOrder", CalculationMode.Price, stopPrice, false); // Set SL from file
-                SetProfitTarget("MarketOrder", CalculationMode.Price, targetPrice); // Set TP from file
+                EnterLong(2, "Long1");
+                SetStopLoss("Long1", CalculationMode.Price, stopPrice, false);
+                SetProfitTarget("Long1", CalculationMode.Price, targetPrice1);
 
-                executeLongTrade = false; // Reset the flag for longs
+				EnterLong(1, "Long3");
+                SetStopLoss("Long3", CalculationMode.Price, stopPrice, false);
+                SetProfitTarget("Long3", CalculationMode.Price, targetPrice2);
+
+                executeLongTrade = false;
             }
-			if (executeShortTrade)
+
+            if (executeShortTrade)
             {
-                double entryPrice = Close[0]; // Current close price as entry price
+                double entryPrice = Close[0];
+                Print($"Placing 3 short orders with TP1: {targetPrice1}, TP2: {targetPrice2}, SL: {stopPrice}");
 
-                // Enter short with SL and TP from the file
-                EnterShort("MarketOrder"); // Place market order
-                SetStopLoss("MarketOrder", CalculationMode.Price, stopPrice, false); // Set SL from file
-                SetProfitTarget("MarketOrder", CalculationMode.Price, targetPrice); // Set TP from file
+                EnterShort(2, "Short1");
+                SetStopLoss("Short1", CalculationMode.Price, stopPrice, false);
+                SetProfitTarget("Short1", CalculationMode.Price, targetPrice1);
 
-                executeShortTrade = false; // Reset the flag for shorts
+				EnterShort(1, "Short3");
+                SetStopLoss("Short3", CalculationMode.Price, stopPrice, false);
+                SetProfitTarget("Short3", CalculationMode.Price, targetPrice2);
+
+                executeShortTrade = false;
             }
         }
     }
