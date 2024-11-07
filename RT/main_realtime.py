@@ -16,8 +16,8 @@ stop_loss_offset = 2               # Is added to SL for Shorts and subtracted fo
 
 # hardcoded_sr_levels = [('2024-11-02 16:19:00', 69245.00), ('2024-11-02 16:19:00', 69167.00)]  # Example support levels
 
-level_interactions_threshold = 2
-max_time_waiting_for_entry = 10
+level_interactions_threshold = 3
+max_time_waiting_for_entry = 15
 
 clear_csv_before_start = True
 # **************************************************************************************************************
