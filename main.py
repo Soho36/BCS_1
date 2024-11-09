@@ -1,5 +1,7 @@
 from data_handling import getting_dataframe_from_file, date_range_func, resample_m1_datapoints
 from price_levels_manual import process_levels
+# from SMA import sma_calculation
+
 """
 sig3 works interesting on hourly. draw too much levels (need to exclude premarket)
 enable 1minute simulation but on 1H OHLC (what happened first SL or TP)
@@ -26,31 +28,25 @@ from candlestick_chart import plot_candlestick_chart, plot_candlestick_chart_1h
 # file_path = 'Bars/MESZ24_M1_202409160000_202409272059_w.csv'
 # file_path = 'Bars/2MESZ24_M1_202409160000_202409272059_w.csv'
 # file_path = 'Bars/MESZ24_H1_w.csv'
-file_path = 'Bars/MESZ24_M1_0801_w.csv'
+file_path = 'Bars/Today_w.csv'
 
 dataframe_from_csv = getting_dataframe_from_file(file_path)
 
-start_date = '2024-09-18'  # Choose the start date to begin from
-end_date = '2024-09-18'  # Choose the end date
+start_date = '2024-11-08'  # Choose the start date to begin from
+end_date = '2024-11-08'  # Choose the end date
 
 # Manually define the support and resistance levels
 # Format: [(index_or_datetime, price_level)]
 
 hardcoded_sr_levels = [
-    ('2024-09-18 08:30:00', 5698.40),
-    ('2024-09-18 06:30:00', 5711.00),
-    ('2024-09-18 12:30:00', 5699.30),
-    ('2024-09-18 16:30:00', 5682.50),
-    ('2024-09-18 17:30:00', 5711.90),
-    # ('2024-09-17 16:30:00', 5679.70),
-    # ('2024-09-17 17:33:00', 5700.47)
+    ('2024-11-08 13:30:00', 21158)
 ]  # Example support levels
 
 # SIMULATION
 start_simulation = True
 
 # ENTRY CONDITIONS
-level_interactions_threshold = 1
+level_interactions_threshold = 3
 max_time_waiting_for_entry = 20
 use_candle_close_as_entry = True  # Must be False if next condition is True
 use_level_price_as_entry = False  # Must be False if previous condition is True
@@ -89,6 +85,8 @@ ticker_name, filtered_by_date_dataframe_m1 = date_range_func(
     start_date,
     end_date
 )
+
+# sma_calculation()
 
 # Resample to H1
 aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataframe_m1)

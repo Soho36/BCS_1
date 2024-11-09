@@ -42,7 +42,7 @@ namespace NinjaTrader.NinjaScript.Strategies
             {
                 Name = "Filetransmit2";
                 Calculate = Calculate.OnEachTick;
-                EntriesPerDirection = 3; // Allow 3 entries
+                EntriesPerDirection = 1; // Allow 3 entries
                 EntryHandling = EntryHandling.UniqueEntries;
             }
         }
