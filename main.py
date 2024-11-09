@@ -43,7 +43,7 @@ hardcoded_sr_levels = [
 ]  # Example support levels
 
 # SMA-period:
-sma_period = 20
+sma_period = 50
 
 # SIMULATION
 start_simulation = True

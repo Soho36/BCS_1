@@ -26,6 +26,9 @@ def plot_candlestick_chart(
     if show_candlestick_chart_m1:
 
         plots_list = []
+
+        sma_plot = mpf.make_addplot(df['SMA'], color='orange', width=1.5)
+
         # Create an empty series with NaN values, having the same index as original DataFrame df:
         signal_series_for_chart = pd.Series([np.nan] * len(df), index=df.index)
         ob_candle_series_for_chart2 = pd.Series([np.nan] * len(df), index=df.index)
@@ -99,7 +102,7 @@ def plot_candlestick_chart(
                 alines=dict(alines=levels_points_for_chart, linewidths=2, alpha=0.4),
                 style='yahoo',
                 title=f'{ticker_name}'.upper(),
-                addplot=plots_list,
+                addplot=[sma_plot] + plots_list,
                 block=False
             )
         else:
@@ -109,7 +112,7 @@ def plot_candlestick_chart(
                 figsize=(12, 6),
                 style='yahoo',
                 title=f'{ticker_name}'.upper(),
-                addplot=plots_list,
+                addplot=[sma_plot] + plots_list,
                 block=False
             )
 
