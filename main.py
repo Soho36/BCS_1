@@ -42,6 +42,9 @@ hardcoded_sr_levels = [
     ('2024-11-08 13:30:00', 21158)
 ]  # Example support levels
 
+# SMA-period:
+sma_period = 20
+
 # SIMULATION
 start_simulation = True
 
@@ -86,7 +89,7 @@ ticker_name, filtered_by_date_dataframe_m1 = date_range_func(
     end_date
 )
 
-# sma_calculation()
+# filtered_by_date_dataframe_m1 = sma_calculation(filtered_by_date_dataframe_m1)
 
 # Resample to H1
 aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataframe_m1)
@@ -104,7 +107,8 @@ aggregated_filtered_dataframe_h1 = resample_m1_datapoints(filtered_by_date_dataf
 ) = process_levels(
     filtered_by_date_dataframe_m1,
     aggregated_filtered_dataframe_h1,
-    hardcoded_sr_levels
+    hardcoded_sr_levels,
+    sma_period
 )
 
 print('output_df_with_levels: \n', output_df_with_levels)

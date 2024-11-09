@@ -1,6 +1,12 @@
 import pandas as pd
 
 
+def sma_calculation(df, sma_period):    # Simple moving average calculation function
+
+    # Calculate SMA and add it as a new column
+    df['SMA'] = round(df['Close'].rolling(window=sma_period).mean(), 2)
+
+
 def levels_discovery(aggregated_filtered_df_h1, hardcoded_sr_levels):
 
     hardcoded_sr_levels = [(pd.Timestamp(date_str), price) for date_str, price in hardcoded_sr_levels]
@@ -95,7 +101,9 @@ def fill_column_with_first_non_null_value(df, column_idx):
                 df.loc[idx, column_idx] = value_to_fill
 
 
-def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1, hardcoded_sr_levels):
+def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1, hardcoded_sr_levels, sma_period):
+
+    sma_calculation(filtered_by_date_dataframe, sma_period)  # Add SMA datapoints to dataframe
     # Step 1: Discover levels
     (
         levels_startpoints_to_chart,
@@ -109,13 +117,14 @@ def process_levels(filtered_by_date_dataframe, aggregated_filtered_df_h1, hardco
 
     # Step 2: Add columns and levels to dataframe
     filtered_by_date_dataframe = filtered_by_date_dataframe.copy()
+
     column_counters = add_columns_and_levels_to_dataframe(filtered_by_date_dataframe, levels_startpoints_to_chart)
     print('column_counters_outside: ', column_counters)
 
     # Step 3: Fill columns with the first non-null value
     for column_index in range(1, len(column_counters) + 1):
         fill_column_with_first_non_null_value(filtered_by_date_dataframe, column_index)
-        print('7. Dataframe with level columns: \n', filtered_by_date_dataframe)    # .iloc[0:50]
+        print('7. Dataframe with level columns: \n', filtered_by_date_dataframe.iloc[0:50])    #
     output_df_with_levels = filtered_by_date_dataframe.copy()
 
     return (levels_startpoints_to_chart,
