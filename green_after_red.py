@@ -100,7 +100,7 @@ three_greens = sum((ranged_df['Current_Candle_color'] == 'G') & (ranged_df['Curr
 three_reds = sum((ranged_df['Current_Candle_color'] == 'R') & (ranged_df['Current_Candle_color'].shift(-1) == 'R') & (ranged_df['Current_Candle_color'].shift(-2) == 'R'))
 
 
-candles_number = 8
+candles_number = 7
 
 
 def count_consecutive_candles(df, column_name, color, num_candles):
