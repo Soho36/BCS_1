@@ -129,12 +129,12 @@ print(f'three_reds: {three_reds}')
 
 # Calculate probabilities of two streak
 def calculate_probabilities():
-    p_green_to_green = green_to_green / total_green if total_green > 0 else 0
-    p_red_to_red = red_to_red / total_red if total_red > 0 else 0
+    p_green_to_green = round(green_to_green / total_green if total_green > 0 else 0, 3)
+    p_red_to_red = round(red_to_red / total_red if total_red > 0 else 0, 3)
 
     # Calculate probabilities of three streak
-    p_three_greens = three_greens / total_green if total_green > 0 else 0
-    p_three_reds = three_reds / total_red if total_red > 0 else 0
+    p_three_greens = round(three_greens / total_green if total_green > 0 else 0, 3)
+    p_three_reds = round(three_reds / total_red if total_red > 0 else 0, 3)
 
     print(f"Probability of (2) green streak: {p_green_to_green}")
     print(f"Probability of (2) red streak: {p_red_to_red}")
@@ -142,6 +142,8 @@ def calculate_probabilities():
     print(f"Probability of (3) green streak: {p_three_greens}")
     print(f"Probability of (3) three red streak: {p_three_reds}")
 
+
+calculate_probabilities()
 
 # CANDLES SIZE COMPARISON
 # def candles_size_comparison(ranged_df):
