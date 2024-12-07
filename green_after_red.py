@@ -50,56 +50,40 @@ def date_range_func(df_csv, start, end):
         return df_filtered_by_date      # DF MUST BE INDEX RESET
 
 
-ranged_df = date_range_func(dataframe_csv, start_date, end_date)
+ranged_dataframe = date_range_func(dataframe_csv, start_date, end_date)
 # print(ranged_df[:50])
 
 # Determine candle color
-ranged_df['Current_Candle_color'] = ranged_df.apply(lambda row: 'G' if row['Close'] > row['Open'] else 'R', axis=1)
-print("All candle colors:\n", ranged_df[:25])
+ranged_dataframe['Current_Candle_color'] = ranged_dataframe.apply(lambda row: 'G' if row['Close'] > row['Open'] else 'R', axis=1)
+print("All candle colors:\n", ranged_dataframe[:25])
+
 # Calculate candle body sizes
-ranged_df['Current_Body_Size'] = abs(ranged_df['High'] - ranged_df['Low'])
+ranged_dataframe['Current_Body_Size'] = abs(ranged_dataframe['High'] - ranged_dataframe['Low'])
+
 # Identify sequences of two consecutive candles
-ranged_df['Prev_Candle_color'] = ranged_df['Current_Candle_color'].shift(1)
-print("Prev_Candle:\n", ranged_df[:25])
-ranged_df['Prev_Body_Size'] = ranged_df['Current_Body_Size'].shift(1)
-# Filter sequences where both candles are the same color
-consecutive_candles = ranged_df[ranged_df['Current_Candle_color'] == ranged_df['Prev_Candle_color']]
-consecutive_candles = consecutive_candles.copy()
-# print("Filtered sequences:\n", consecutive_candles[:50])
-
-# Compare sizes
-consecutive_candles['Curr_compared_to_prev'] = consecutive_candles.apply(
-    lambda row: 'Bigger' if row['Current_Body_Size'] > row['Prev_Body_Size'] else
-                ('Smaller' if row['Current_Body_Size'] < row['Prev_Body_Size'] else 'Same'),
-    axis=1
-)
-print('Size_Comparison:\n', consecutive_candles)
-
-# Count occurrences of each comparison
-comparison_counts = consecutive_candles['Curr_compared_to_prev'].value_counts(normalize=True)
-print()
-print("Comparison of second candle to the first in sequences:")
-print(comparison_counts)
-print()
+ranged_dataframe['Prev_Candle_color'] = ranged_dataframe['Current_Candle_color'].shift(1)
+print("Prev_Candle:\n", ranged_dataframe[:25])
+ranged_dataframe['Prev_Body_Size'] = ranged_dataframe['Current_Body_Size'].shift(1)
 
 
 # Count transitions
-total_green = sum(ranged_df['Current_Candle_color'] == 'G')
-total_red = sum(ranged_df['Current_Candle_color'] == 'R')
+total_green = sum(ranged_dataframe['Current_Candle_color'] == 'G')
+total_red = sum(ranged_dataframe['Current_Candle_color'] == 'R')
 
 print("total_green: ", total_green)
 print("total_red: ", total_red)
 
-green_to_green = sum((ranged_df['Current_Candle_color'] == 'G') & (ranged_df['Current_Candle_color'].shift(-1) == 'G'))
-red_to_red = sum((ranged_df['Current_Candle_color'] == 'R') & (ranged_df['Current_Candle_color'].shift(-1) == 'R'))
+green_to_green = sum((ranged_dataframe['Current_Candle_color'] == 'G') & (ranged_dataframe['Current_Candle_color'].shift(-1) == 'G'))
+red_to_red = sum((ranged_dataframe['Current_Candle_color'] == 'R') & (ranged_dataframe['Current_Candle_color'].shift(-1) == 'R'))
 
 print(f'green to green: {green_to_green}')
 print(f'red to red: {red_to_red}')
 
-three_greens = sum((ranged_df['Current_Candle_color'] == 'G') & (ranged_df['Current_Candle_color'].shift(-1) == 'G') & (ranged_df['Current_Candle_color'].shift(-2) == 'G'))
-three_reds = sum((ranged_df['Current_Candle_color'] == 'R') & (ranged_df['Current_Candle_color'].shift(-1) == 'R') & (ranged_df['Current_Candle_color'].shift(-2) == 'R'))
+three_greens = sum((ranged_dataframe['Current_Candle_color'] == 'G') & (ranged_dataframe['Current_Candle_color'].shift(-1) == 'G') & (ranged_dataframe['Current_Candle_color'].shift(-2) == 'G'))
+three_reds = sum((ranged_dataframe['Current_Candle_color'] == 'R') & (ranged_dataframe['Current_Candle_color'].shift(-1) == 'R') & (ranged_dataframe['Current_Candle_color'].shift(-2) == 'R'))
 
 
+# Number of consecutive candles to search
 candles_number = 7
 
 
@@ -123,8 +107,8 @@ def count_consecutive_candles(df, column_name, color, num_candles):
 
 
 # Example usage
-green_to_green_count = count_consecutive_candles(ranged_df, 'Current_Candle_color', 'G', candles_number)
-red_to_red_count = count_consecutive_candles(ranged_df, 'Current_Candle_color', 'R', candles_number)
+green_to_green_count = count_consecutive_candles(ranged_dataframe, 'Current_Candle_color', 'G', candles_number)
+red_to_red_count = count_consecutive_candles(ranged_dataframe, 'Current_Candle_color', 'R', candles_number)
 print("--------------------------")
 print(f"Green to green ({candles_number} candles): {green_to_green_count}")
 print(f"Red to red ({candles_number} candles): {red_to_red_count}")
@@ -136,6 +120,7 @@ print(f'three_reds: {three_reds}')
 # Calculate probabilities of two streak
 p_green_to_green = green_to_green / total_green if total_green > 0 else 0
 p_red_to_red = red_to_red / total_red if total_red > 0 else 0
+
 # Calculate probabilities of three streak
 p_three_greens = three_greens / total_green if total_green > 0 else 0
 p_three_reds = three_reds / total_red if total_red > 0 else 0
@@ -145,3 +130,30 @@ print(f"Probability of (2) red streak: {p_red_to_red}")
 
 print(f"Probability of (3) green streak: {p_three_greens}")
 print(f"Probability of (3) three red streak: {p_three_reds}")
+
+
+# CANDLES SIZE COMPARISON
+def candles_size_comparison(ranged_df):
+
+    # Filter sequences where both candles are the same color
+    consecutive_candles = ranged_df[ranged_df['Current_Candle_color'] == ranged_df['Prev_Candle_color']]
+    consecutive_candles = consecutive_candles.copy()
+    # print("Filtered sequences:\n", consecutive_candles[:50])
+
+    # Compare sizes
+    consecutive_candles['Curr_compared_to_prev'] = consecutive_candles.apply(
+        lambda row: 'Bigger' if row['Current_Body_Size'] > row['Prev_Body_Size'] else
+                    ('Smaller' if row['Current_Body_Size'] < row['Prev_Body_Size'] else 'Same'),
+        axis=1
+    )
+    print('Size_Comparison:\n', consecutive_candles)
+
+    # Count occurrences of each comparison
+    comparison_counts = consecutive_candles['Curr_compared_to_prev'].value_counts(normalize=True)
+    print()
+    print("Comparison of second candle to the first in sequences:")
+    print(comparison_counts)
+    print()
+
+
+candles_size_comparison(ranged_dataframe)
