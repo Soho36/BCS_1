@@ -10,7 +10,7 @@ pd.set_option('display.max_columns', 8)  # Increase the number of columns shown
 pd.set_option('display.width', 500)  # Increase the terminal width for better visibility
 
 
-def getting_dataframe_from_file(path):
+def get_dataframe_from_file(path):
 
     print()
 
@@ -25,7 +25,7 @@ def getting_dataframe_from_file(path):
     return csv_df
 
 
-dataframe_csv = getting_dataframe_from_file(file_path)
+dataframe_csv = get_dataframe_from_file(file_path)
 
 
 def date_range_func(df_csv, start, end):
