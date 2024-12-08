@@ -95,52 +95,106 @@ def add_candles_colors_to_dataframe(ranged_df):
 ) = add_candles_colors_to_dataframe(ranged_dataframe)
 
 
-def build_transition_matrix(df, column_name):
+def add_three_candle_states_to_dataframe(ranged_df):
+    # Create a new column for three-candle sequences
+    ranged_df['Three_Candle_Sequence'] = ranged_df['Prev_Candle_color'].shift(1) + ranged_df['Prev_Candle_color'] + \
+                                         ranged_df['Current_Candle_color']
+
+    # Filter valid three-candle sequences
+    valid_sequences = ['RRR', 'GGG']
+    ranged_df['Three_Candle_State'] = ranged_df['Three_Candle_Sequence'].apply(
+        lambda x: x if x in valid_sequences else None)
+
+    # Count occurrences of each sequence
+    three_g_count = sum(ranged_df['Three_Candle_State'] == 'GGG')
+    three_r_count = sum(ranged_df['Three_Candle_State'] == 'RRR')
+
+    print(f"Three consecutive greens (GGG): {three_g_count}")
+    print(f"Three consecutive reds (RRR): {three_r_count}")
+
+    return ranged_df, three_g_count, three_r_count
+
+
+# Call the function to add three-candle states
+ranged_dataframe, three_g_count, three_r_count = add_three_candle_states_to_dataframe(ranged_dataframe)
+
+# Display the updated DataFrame with the new columns
+print("\nDataFrame with Three-Candle States:")
+print(ranged_dataframe[['DateTime', 'Three_Candle_State']].dropna())
+
+
+def build_combined_states(df):
     """
-    Build a transition matrix for candle colors.
+    Combine single-candle states and multi-candle states into a unified column.
+    """
+    df['Combined_State'] = df['Three_Candle_State'].combine_first(df['Current_Candle_color'])
+    return df
+
+
+def build_transition_matrix(df, column_name, smoothing=1e-3):
+    """
+    Build a transition matrix for combined candle states.
 
     :param df: DataFrame containing the data.
-    :param column_name: Column name representing the candle colors.
+    :param column_name: Column name representing the candle states.
+    :param smoothing: Smoothing factor to avoid zero probabilities.
     :return: A transition matrix as a DataFrame.
     """
-    # States
-    states = ['G', 'R']
+    # Extract unique states from the column
+    states = df[column_name].dropna().unique()
+
+    # Initialize transition counts dictionary
     transition_counts = {state: {next_state: 0 for next_state in states} for state in states}
 
     # Count transitions
     for i in range(len(df) - 1):
         current_state = df.iloc[i][column_name]
         next_state = df.iloc[i + 1][column_name]
-        if current_state in states and next_state in states:
+        if pd.notna(current_state) and pd.notna(next_state):  # Ignore NaN states
             transition_counts[current_state][next_state] += 1
 
-    # Convert counts to probabilities
+    # Convert counts to a DataFrame
     trans_matrix = pd.DataFrame(transition_counts).T
-    trans_matrix = trans_matrix.div(trans_matrix.sum(axis=1), axis=0)
+
+    # Apply smoothing to avoid zero probabilities
+    trans_matrix += smoothing
+
+    # Normalize to convert counts to probabilities
+    trans_matrix = trans_matrix.div(trans_matrix.sum(axis=1), axis=0).fillna(0)
 
     return trans_matrix
 
 
-# Build and display the transition matrix
-transition_matrix = build_transition_matrix(ranged_dataframe, 'Current_Candle_color')
-print("\nTransition Matrix:")
-print(transition_matrix)
+# Step 1: Add combined states
+ranged_dataframe = build_combined_states(ranged_dataframe)
+
+# Step 2: Build and display the transition matrix
+combined_transition_matrix = build_transition_matrix(ranged_dataframe, 'Combined_State')
+print("\nTransition Matrix for Combined States:")
+print(combined_transition_matrix)
 
 
-def predict_next_state(current_state, transition_matrix):
-    """
-    Predict the next state based on the current state and transition matrix.
-
-    :param current_state: The current state ('G' or 'R').
-    :param transition_matrix: The transition matrix as a DataFrame.
-    :return: The predicted next state.
-    """
-    probabilities = transition_matrix.loc[current_state]
-    return probabilities.idxmax()  # Return the state with the highest probability
+# Build and display the transition matrix for three-candle states
+three_candle_transition_matrix = build_transition_matrix(ranged_dataframe, 'Three_Candle_State')
+print("\nTransition Matrix for Three-Candle States:")
+print(three_candle_transition_matrix)
 
 
-# Example prediction
-current_state = ranged_dataframe.iloc[-1]['Current_Candle_color']  # Last candle's color
-predicted_state = predict_next_state(current_state, transition_matrix)
-print(f"Current state: {current_state}, Predicted next state: {predicted_state}")
+
+# def predict_next_state(current_state, transition_matrix):
+#     """
+#     Predict the next state based on the current state and transition matrix.
+#
+#     :param current_state: The current state ('G' or 'R').
+#     :param transition_matrix: The transition matrix as a DataFrame.
+#     :return: The predicted next state.
+#     """
+#     probabilities = transition_matrix.loc[current_state]
+#     return probabilities.idxmax()  # Return the state with the highest probability
+#
+#
+# # Example prediction
+# current_state = ranged_dataframe.iloc[-1]['Current_Candle_color']  # Last candle's color
+# predicted_state = predict_next_state(current_state, three_candle_transition_matrix)
+# print(f"Current state: {current_state}, Predicted next state: {predicted_state}")
 
